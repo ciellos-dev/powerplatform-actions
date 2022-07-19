@@ -37,7 +37,6 @@ outputs:
     description: ID of the environment connected with
 
 runs:
-  using: "composite"
   steps:
   - name: WhoAmI
     shell: powershell
