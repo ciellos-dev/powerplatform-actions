@@ -114,7 +114,7 @@ function Declare-EmbeddedModule {
 function Ensure-PowershellDependencies {
     # base dependency for e.g. PowerShellGet
     Import-Module PackageManagement
-    Register-PackageSource -Name NuGet -ProviderName NuGet -Location https://www.nuget.org/api/v2/  -Force:$true -Confirm:$false
+    Register-PackageSource -Name NuGet -ProviderName NuGet -Location https://www.nuget.org/api/v2/  -Trusted -Force:$true -Confirm:$false
 
     Install-PackageProvider -Name "NuGet" -Force -ForceBootstrap -Scope CurrentUser -MinimumVersion 2.8.5.208
 
