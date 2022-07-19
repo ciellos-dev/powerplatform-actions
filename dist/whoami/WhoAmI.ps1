@@ -24,7 +24,7 @@ function Invoke-WhoAmI {
 }
 
 try {
-    ("ps_modules\VstsTaskSdk", "SharedFunctions.psm1", "Get-ParameterValue.ps1") `
+    ( "SharedFunctions.psm1", "Get-ParameterValue.ps1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
     $redirector = Get-BindingRedirector
 
@@ -40,12 +40,13 @@ try {
     ## Load up some common functionality for interacting
     ## with the GitHub Actions/Workflow environment
     Import-Module GitHubActions
+        $environment_url = Get-ActionInput "environment-url" -Required
+
+    $environment_url
 
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell" -Verbose
 
-    $environment_url = Get-ActionInput "environment-url" -Required
 
-    $environment_url
     # Get input parameters and credentials
     $authInfo = Get-AuthInfoFromActiveServiceConnection
 
