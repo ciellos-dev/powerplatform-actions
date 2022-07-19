@@ -37,5 +37,4 @@ outputs:
     description: ID of the environment connected with
 
 runs:
-    using: 'powershell'
     main: '..\dist\whoami\WhoAmI.ps1'
