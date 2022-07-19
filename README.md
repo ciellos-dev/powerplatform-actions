@@ -1,2 +1,2 @@
 # powerplatform-actions
-Power Platform Actions
+Microsoft Power Platform Actions
