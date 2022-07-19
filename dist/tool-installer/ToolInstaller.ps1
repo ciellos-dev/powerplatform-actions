@@ -3,7 +3,7 @@
 [CmdletBinding()]
 param(
     [Parameter()]
-    [string]$XrmOnlineManagementApiVersion,
+    [string]$PowerAppsAdminVersion,
     [string]$XrmToolingPackageDeploymentVersion,
     [string]$MicrosoftPowerAppsCheckerVersion,
     [string]$CrmSdkCoreToolsVersion
@@ -165,8 +165,7 @@ try {
     #$xrmToolingPackageDeploymentVersion = Get-VstsInputWithDefault -Name "XrmToolingPackageDeploymentVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
     #$microsoftPowerAppsCheckerVersion = Get-VstsInputWithDefault -Name "MicrosoftPowerAppsCheckerVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
     #$crmSdkCoreToolsVersion = Get-VstsInputWithDefault -Name "CrmSdkCoreToolsVersion" -taskJsonFile $taskJson  -DefaultValue:$defaultVersion -Require
-    
-    $xrmOnlineManagementApiVersion = $XrmOnlineManagementApiVersion
+
     $powerAppsAdminVersion = $PowerAppsAdminVersion
     $xrmToolingPackageDeploymentVersion = $XrmToolingPackageDeploymentVersion
     $microsoftPowerAppsCheckerVersion = $MicrosoftPowerAppsCheckerVersion
