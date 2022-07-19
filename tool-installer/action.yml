@@ -27,4 +27,4 @@ runs:
   using: "composite"
   steps:
     - run: ${{ github.action_path }}\..\dist\tool-installer\ToolInstaller.ps1
-      shell: powershell
+      shell: pwsh
