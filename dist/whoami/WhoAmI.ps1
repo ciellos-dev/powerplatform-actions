@@ -43,9 +43,9 @@ try {
 
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell" -Verbose
 
-    $environment-url = Get-ActionInput "environment-url" -Required
+    $environment_url = Get-ActionInput "environment-url" -Required
 
-    $environment-url
+    $environment_url
     # Get input parameters and credentials
     $authInfo = Get-AuthInfoFromActiveServiceConnection
 
