@@ -38,6 +38,5 @@ outputs:
 
 runs:
   steps:
-  - name: WhoAmI
-    shell: powershell
-    run: ..\dist\whoami\WhoAmI.ps1
+  - using: 'powershell'
+    main: '..\dist\whoami\WhoAmI.ps1'
