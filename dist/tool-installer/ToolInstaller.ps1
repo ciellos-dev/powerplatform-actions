@@ -3,9 +3,9 @@
 [CmdletBinding()]
 param(
     [string]$XrmOnlineManagementApiVersion,
-    [string]XrmToolingPackageDeploymentVersion,
-    [string]MicrosoftPowerAppsCheckerVersion,
-    [string]CrmSdkCoreToolsVersion
+    [string]$XrmToolingPackageDeploymentVersion,
+    [string]$MicrosoftPowerAppsCheckerVersion,
+    [string]$CrmSdkCoreToolsVersion
 )
 
 
