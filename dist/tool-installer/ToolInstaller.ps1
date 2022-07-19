@@ -142,8 +142,8 @@ try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 
-    ## Load up some common functionality for interacting
-    ## with the GitHub Actions/Workflow environment
+    Ensure-PowershellDependencies
+    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
     
     Write-Verbose "PS-Version: $($PSVersionTable.PSVersion) - $($PSVersionTable.PSEdition)"
     ("ps_modules\VstsTaskSdk", "SharedFunctions.psm1") `
