@@ -23,13 +23,29 @@ function Invoke-WhoAmI {
     }
 }
 
-Trace-VstsEnteringInvocation $MyInvocation
 try {
     ("SharedFunctions.psm1", "Get-ParameterValue.ps1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
     $redirector = Get-BindingRedirector
+
+    ## You interface with the Actions/Workflow system by interacting
+    ## with the environment.  The `GitHubActions` module makes this
+    ## easier and more natural by wrapping up access to the Workflow
+    ## environment in PowerShell-friendly constructions and idioms
+    if (-not (Get-Module -ListAvailable GitHubActions)) {
+        ## Make sure the GH Actions module is installed from the Gallery
+        Install-Module GitHubActions -Force
+    }
+
+    ## Load up some common functionality for interacting
+    ## with the GitHub Actions/Workflow environment
+    Import-Module GitHubActions
+
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell" -Verbose
 
+    $environment-url = Get-ActionInput environment-url -Required
+
+    $environment-url
     # Get input parameters and credentials
     $authInfo = Get-AuthInfoFromActiveServiceConnection
 
@@ -40,7 +56,6 @@ try {
     if ($null -ne $redirector) {
         $redirector.Dispose()
     }
-    Trace-VstsLeavingInvocation $MyInvocation
 }
 
 # SIG # Begin signature block

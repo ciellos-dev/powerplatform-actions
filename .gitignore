@@ -1,0 +1,4 @@
+.vs
+*.lock
+.suo
+slnx.sqlite

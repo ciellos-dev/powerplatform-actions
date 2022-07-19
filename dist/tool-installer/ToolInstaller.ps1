@@ -132,7 +132,6 @@ function Ensure-PowershellDependencies {
     }
 }
 
-Trace-VstsEnteringInvocation $MyInvocation
 try {
     Write-Verbose "PS-Version: $($PSVersionTable.PSVersion) - $($PSVersionTable.PSEdition)"
     ("SharedFunctions.psm1") `
@@ -185,7 +184,7 @@ try {
     Install-NugetPackage -RootPath $powerPlatformToolsPath -PackageName "Microsoft.CrmSdk.CoreTools" -PackageVersion $crmSdkCoreToolsVersion -NugetConfigFile $nugetConfigFile -NugetSourceName $nugetSourceName
 
 } finally {
-    Trace-VstsLeavingInvocation $MyInvocation
+
 }
 
 # SIG # Begin signature block
