@@ -39,6 +39,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-  - id: VMState
+  - name: WhoAmI
     shell: powershell
     run: ..\dist\whoami\WhoAmI.ps1
