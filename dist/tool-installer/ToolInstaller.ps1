@@ -140,6 +140,15 @@ function Ensure-PowershellDependencies {
 
 try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+
+    ## Load up some common functionality for interacting
+    ## with the GitHub Actions/Workflow environment
+    
+    Write-Verbose "PS-Version: $($PSVersionTable.PSVersion) - $($PSVersionTable.PSEdition)"
+    ("ps_modules\VstsTaskSdk", "SharedFunctions.psm1") `
+        | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
+
     ## You interface with the Actions/Workflow system by interacting
     ## with the environment.  The `GitHubActions` module makes this
     ## easier and more natural by wrapping up access to the Workflow
@@ -148,13 +157,7 @@ try {
         ## Make sure the GH Actions module is installed from the Gallery
         Install-Module GitHubActions -Force
     }
-
-    ## Load up some common functionality for interacting
-    ## with the GitHub Actions/Workflow environment
     Import-Module GitHubActions
-    Write-Verbose "PS-Version: $($PSVersionTable.PSVersion) - $($PSVersionTable.PSEdition)"
-    ("ps_modules\VstsTaskSdk", "SharedFunctions.psm1") `
-        | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
 
     #$defaultVersion = Get-VSTSInput -Name "DefaultVersion" -AsBool
     #$taskJson = Join-Path -Path $PSScriptRoot "task.json"
