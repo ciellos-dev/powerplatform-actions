@@ -159,8 +159,8 @@ try {
     #$xrmToolingPackageDeploymentVersion = Get-VstsInputWithDefault -Name "XrmToolingPackageDeploymentVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
     #$microsoftPowerAppsCheckerVersion = Get-VstsInputWithDefault -Name "MicrosoftPowerAppsCheckerVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
     #$crmSdkCoreToolsVersion = Get-VstsInputWithDefault -Name "CrmSdkCoreToolsVersion" -taskJsonFile $taskJson  -DefaultValue:$defaultVersion -Require
-
-    $xrmOnlineManagementApiVersion = Get-ActionInput "XrmOnlineManagementApiVersion" -Required
+    ${{ inputs.XrmOnlineManagementApiVersion }}
+    $xrmOnlineManagementApiVersion = ${{ inputs.XrmOnlineManagementApiVersion }}
     $powerAppsAdminVersion = Get-ActionInput "PowerAppsAdminVersion" -Required
     $xrmToolingPackageDeploymentVersion = Get-ActionInput "XrmToolingPackageDeploymentVersion" -Required
     $microsoftPowerAppsCheckerVersion = Get-ActionInput "MicrosoftPowerAppsCheckerVersion" -Required
