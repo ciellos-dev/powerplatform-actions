@@ -39,5 +39,5 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - run: ${{ github.action_path }}\dist\whoami\WhoAmI.ps1
+    - run: ${{ github.action_path }}\WhoAmI.ps1
       shell: powershell
