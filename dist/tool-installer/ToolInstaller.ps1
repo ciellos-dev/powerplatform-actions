@@ -113,6 +113,9 @@ function Declare-EmbeddedModule {
 
 function Ensure-PowershellDependencies {
     # base dependency for e.g. PowerShellGet
+    Import-Module PackageManagement
+    Register-PackageSource -Name NuGet -ProviderName NuGet -Location https://www.nuget.org/api/v2/  -Force:$true -Confirm:$false
+
     Install-PackageProvider -Name "NuGet" -Force -ForceBootstrap -Scope CurrentUser -MinimumVersion 2.8.5.208
 
     # plain Win10 has older and less robust PackageManagment and PowerShellGet modules by default;
