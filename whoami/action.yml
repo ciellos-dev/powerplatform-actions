@@ -40,4 +40,4 @@ runs:
   steps:
   - name: WhoAmI
     shell: powershell
-    run: '..\dist\whoami\WhoAmI.ps1'
+    run: ..\dist\whoami\WhoAmI.ps1
