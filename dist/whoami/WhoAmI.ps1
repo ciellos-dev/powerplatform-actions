@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 
 [CmdletBinding()]
-param()
+param([Parameter()])
 
 function Invoke-WhoAmI {
     [CmdletBinding()]

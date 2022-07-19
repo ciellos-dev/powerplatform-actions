@@ -2,6 +2,7 @@
 
 [CmdletBinding()]
 param(
+    [Parameter()]
     [string]$XrmOnlineManagementApiVersion,
     [string]$XrmToolingPackageDeploymentVersion,
     [string]$MicrosoftPowerAppsCheckerVersion,
