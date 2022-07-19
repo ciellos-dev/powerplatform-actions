@@ -43,7 +43,7 @@ try {
 
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell" -Verbose
 
-    $environment-url = Get-ActionInput environment-url -Required
+    $environment-url = Get-ActionInput "environment-url" -Required
 
     $environment-url
     # Get input parameters and credentials
