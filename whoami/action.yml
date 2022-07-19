@@ -37,4 +37,7 @@ outputs:
     description: ID of the environment connected with
 
 runs:
-    main: '..\dist\whoami\WhoAmI.ps1'
+  using: "composite"
+  steps:
+    - run: ${{ github.action_path }}\dist\whoami\WhoAmI.ps1
+      shell: powershell
