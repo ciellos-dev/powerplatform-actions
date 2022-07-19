@@ -113,8 +113,9 @@ function Declare-EmbeddedModule {
 
 function Ensure-PowershellDependencies {
     # base dependency for e.g. PowerShellGet
+    Set-ItemProperty -Path 'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319' -Name 'SchUseStrongCrypto' -Value '1' -Type DWord
     Import-Module PackageManagement
-    Register-PackageSource -Name NuGet -ProviderName NuGet -Location https://www.nuget.org/api/v2/  -Trusted -Force:$true -Confirm:$false
+    #Register-PackageSource -Name NuGet -ProviderName NuGet -Location https://www.nuget.org/api/v2/  -Trusted -Force:$true -Confirm:$false
 
     Install-PackageProvider -Name "NuGet" -Force -ForceBootstrap -Scope CurrentUser -MinimumVersion 2.8.5.208
 
