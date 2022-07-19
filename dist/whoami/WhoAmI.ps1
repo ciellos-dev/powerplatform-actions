@@ -42,7 +42,7 @@ try {
     Import-Module GitHubActions
         $environment_url = Get-ActionInput "environment-url" -Required
 
-    $environment_url
+    Write-Host "EvUrl is " $environment_url
 
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell" -Verbose
 
