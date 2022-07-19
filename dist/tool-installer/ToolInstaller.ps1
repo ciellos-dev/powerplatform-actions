@@ -1,7 +1,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 
 [CmdletBinding()]
-param()
+param(
+    [string]$XrmOnlineManagementApiVersion,
+    [string]XrmToolingPackageDeploymentVersion,
+    [string]MicrosoftPowerAppsCheckerVersion,
+    [string]CrmSdkCoreToolsVersion
+)
 
 
 function Install-PowerShellModule {
@@ -159,12 +164,12 @@ try {
     #$xrmToolingPackageDeploymentVersion = Get-VstsInputWithDefault -Name "XrmToolingPackageDeploymentVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
     #$microsoftPowerAppsCheckerVersion = Get-VstsInputWithDefault -Name "MicrosoftPowerAppsCheckerVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
     #$crmSdkCoreToolsVersion = Get-VstsInputWithDefault -Name "CrmSdkCoreToolsVersion" -taskJsonFile $taskJson  -DefaultValue:$defaultVersion -Require
-    ${{ inputs.XrmOnlineManagementApiVersion }}
-    $xrmOnlineManagementApiVersion = ${{ inputs.XrmOnlineManagementApiVersion }}
-    $powerAppsAdminVersion = Get-ActionInput "PowerAppsAdminVersion" -Required
-    $xrmToolingPackageDeploymentVersion = Get-ActionInput "XrmToolingPackageDeploymentVersion" -Required
-    $microsoftPowerAppsCheckerVersion = Get-ActionInput "MicrosoftPowerAppsCheckerVersion" -Required
-    $crmSdkCoreToolsVersion = Get-ActionInput "CrmSdkCoreToolsVersion" -Required
+    
+    $xrmOnlineManagementApiVersion = $XrmOnlineManagementApiVersion
+    $powerAppsAdminVersion = $PowerAppsAdminVersion
+    $xrmToolingPackageDeploymentVersion = $XrmToolingPackageDeploymentVersion
+    $microsoftPowerAppsCheckerVersion = $MicrosoftPowerAppsCheckerVersion
+    $crmSdkCoreToolsVersion = $CrmSdkCoreToolsVersion
 
     $toolsSubFolder = "_t"
     if (Test-Path Env:GITHUB_WORKSPACE) {
@@ -176,9 +181,9 @@ try {
     Write-Verbose "tools folder: $powerPlatformToolsPath"
 
     Ensure-PowershellDependencies
-    Install-PowerShellModule -RootPath $powerPlatformToolsPath -ModuleName "Microsoft.PowerApps.Administration.PowerShell" -ModuleVersion $powerAppsAdminVersion -SubPath "pa"
-    Install-PowerShellModule -RootPath $powerPlatformToolsPath -ModuleName "Microsoft.Xrm.Tooling.PackageDeployment.Powershell" -ModuleVersion $xrmToolingPackageDeploymentVersion -SubPath "pd"
-    Install-PowerShellModule -RootPath $powerPlatformToolsPath -ModuleName "Microsoft.PowerApps.Checker.PowerShell" -ModuleVersion $microsoftPowerAppsCheckerVersion -SubPath "ck"
+    Install-PowerShellModule -RootPath $powerPlatformToolsPath -ModuleName "Microsoft.PowerApps.Administration.PowerShell" -ModuleVersion $PowerAppsAdminVersion -SubPath "pa"
+    Install-PowerShellModule -RootPath $powerPlatformToolsPath -ModuleName "Microsoft.Xrm.Tooling.PackageDeployment.Powershell" -ModuleVersion $XrmToolingPackageDeploymentVersion -SubPath "pd"
+    Install-PowerShellModule -RootPath $powerPlatformToolsPath -ModuleName "Microsoft.PowerApps.Checker.PowerShell" -ModuleVersion $MicrosoftPowerAppsCheckerVersion -SubPath "ck"
 
     Declare-EmbeddedModule "Microsoft.Xrm.WebApi.PowerShell"
     Declare-EmbeddedModule "Microsoft.Xrm.InProcBindingRedirect.PS"
@@ -190,7 +195,7 @@ try {
     $nugetSourceName = "PP.BT.nuget.org"
     Set-NugetSource -NugetConfigFile $nugetConfigFile $nugetSourceName
 
-    Install-NugetPackage -RootPath $powerPlatformToolsPath -PackageName "Microsoft.CrmSdk.CoreTools" -PackageVersion $crmSdkCoreToolsVersion -NugetConfigFile $nugetConfigFile -NugetSourceName $nugetSourceName
+    Install-NugetPackage -RootPath $powerPlatformToolsPath -PackageName "Microsoft.CrmSdk.CoreTools" -PackageVersion $CrmSdkCoreToolsVersion -NugetConfigFile $nugetConfigFile -NugetSourceName $nugetSourceName
 
 } finally {
 

@@ -26,5 +26,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: ${{ github.action_path }}\..\dist\tool-installer\ToolInstaller.ps1
+    - run: |
+        ${{ github.action_path }}\..\dist\tool-installer\ToolInstaller.ps1 -PowerAppsAdminVersion ${{ inputs.PowerAppsAdminVersion }} `
+                                                                           -XrmToolingPackageDeploymentVersion ${{ inputs.XrmToolingPackageDeploymentVersion }} `
+                                                                           -MicrosoftPowerAppsCheckerVersion ${{ inputs.MicrosoftPowerAppsCheckerVersion }} `
+                                                                           -CrmSdkCoreToolsVersion ${{ inputs.CrmSdkCoreToolsVersion }} 
       shell: pwsh
