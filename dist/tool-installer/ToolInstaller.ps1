@@ -139,6 +139,7 @@ function Ensure-PowershellDependencies {
 }
 
 try {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     ## You interface with the Actions/Workflow system by interacting
     ## with the environment.  The `GitHubActions` module makes this
     ## easier and more natural by wrapping up access to the Workflow
