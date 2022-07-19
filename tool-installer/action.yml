@@ -1,0 +1,30 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+name: 'who-am-i'
+description: 'Power Platform Who Am I'
+inputs:
+  PowerAppsAdminVersion:
+    description: 'Specify the version of Microsoft PowerApps Administration PowerShell to install'
+    required: false
+    default: '2.0.139'
+
+  XrmToolingPackageDeploymentVersion:
+    description: 'Specify the version of Xrm Tooling PackageDeployment to install'
+    required: false
+    default: '3.3.0.928'
+
+  MicrosoftPowerAppsCheckerVersion:
+    description: 'Specify the version of Microsoft PowerApps Checker to install'
+    required: false
+    default: '1.0.29'
+
+  CrmSdkCoreToolsVersion:
+    description: 'Specify the version of CrmSdk Core Tools to install'
+    required: false
+    default: '9.1.0.111'
+
+runs:
+  using: "composite"
+  steps:
+    - run: ${{ github.action_path }}\..\dist\tool-installer\ToolInstaller.ps1
+      shell: powershell

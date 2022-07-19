@@ -149,29 +149,26 @@ try {
     ("ps_modules\VstsTaskSdk", "SharedFunctions.psm1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
 
-    $defaultVersion = Get-VSTSInput -Name "DefaultVersion" -AsBool
-    $taskJson = Join-Path -Path $PSScriptRoot "task.json"
-    $xrmOnlineManagementApiVersion = Get-VstsInputWithDefault -Name "XrmOnlineManagementApiVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion
-    if ($xrmOnlineManagementApiVersion -ne '(obsolete)') {
-        Write-Warning "OBSOLETE: This version of the BuildTools no longer depends on the OnlineManagement module; any value will be ignored"
-    }
-    $powerAppsAdminVersion = Get-VstsInputWithDefault -Name "PowerAppsAdminVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
-    $xrmToolingPackageDeploymentVersion = Get-VstsInputWithDefault -Name "XrmToolingPackageDeploymentVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
-    $microsoftPowerAppsCheckerVersion = Get-VstsInputWithDefault -Name "MicrosoftPowerAppsCheckerVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
-    $crmSdkCoreToolsVersion = Get-VstsInputWithDefault -Name "CrmSdkCoreToolsVersion" -taskJsonFile $taskJson  -DefaultValue:$defaultVersion -Require
+    #$defaultVersion = Get-VSTSInput -Name "DefaultVersion" -AsBool
+    #$taskJson = Join-Path -Path $PSScriptRoot "task.json"
+    #$xrmOnlineManagementApiVersion = Get-VstsInputWithDefault -Name "XrmOnlineManagementApiVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion
+    #if ($xrmOnlineManagementApiVersion -ne '(obsolete)') {
+    #    Write-Warning "OBSOLETE: This version of the BuildTools no longer depends on the OnlineManagement module; any value will be ignored"
+    #}
+    #$powerAppsAdminVersion = Get-VstsInputWithDefault -Name "PowerAppsAdminVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
+    #$xrmToolingPackageDeploymentVersion = Get-VstsInputWithDefault -Name "XrmToolingPackageDeploymentVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
+    #$microsoftPowerAppsCheckerVersion = Get-VstsInputWithDefault -Name "MicrosoftPowerAppsCheckerVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
+    #$crmSdkCoreToolsVersion = Get-VstsInputWithDefault -Name "CrmSdkCoreToolsVersion" -taskJsonFile $taskJson  -DefaultValue:$defaultVersion -Require
+
+    $xrmOnlineManagementApiVersion = Get-ActionInput "XrmOnlineManagementApiVersion" -Required
+    $powerAppsAdminVersion = Get-ActionInput "PowerAppsAdminVersion" -Required
+    $xrmToolingPackageDeploymentVersion = Get-ActionInput "XrmToolingPackageDeploymentVersion" -Required
+    $microsoftPowerAppsCheckerVersion = Get-ActionInput "MicrosoftPowerAppsCheckerVersion" -Required
+    $crmSdkCoreToolsVersion = Get-ActionInput "CrmSdkCoreToolsVersion" -Required
 
     $toolsSubFolder = "_t"
-    if (Test-Path Env:VSTS_TOOLS_PATH) {
-        $toolsPath = $Env:VSTS_TOOLS_PATH
-    }
-    elseif (Test-Path Env:PIPELINE_WORKSPACE) {
-        $toolsPath = Join-Path $Env:PIPELINE_WORKSPACE $toolsSubFolder
-    }
-    elseif (Test-Path Env:AGENT_BUILDDIRECTORY ) {
-        $toolsPath = Join-Path $Env:AGENT_BUILDDIRECTORY $toolsSubFolder
-    }
-    else {
-        $toolsPath = Join-Path (Get-Location) $toolsSubFolder
+    if (Test-Path Env:GITHUB_WORKSPACE) {
+        $toolsPath = Join-Path $Env:GITHUB_WORKSPACE $toolsSubFolder
     }
 
     $powerPlatformToolsPath = "$toolsPath\PA_BT"
