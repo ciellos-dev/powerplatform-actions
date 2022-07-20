@@ -1,0 +1,17 @@
+name: test
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: script 1
+        run: |
+          Import-Module dist/psmodules/VstsTaskSdk
+          Set-VstsTaskVariable -Name "TestVar" -Value "TestValue1"
+
+      - name: Run a multi-line script
+        run: |
+          Get-VstsTaskVariable -Name "TestVar"
