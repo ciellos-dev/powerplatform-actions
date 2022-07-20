@@ -148,9 +148,15 @@ function Ensure-PowershellDependencies {
 
 try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    Remove-Module GitHubActions -Force -ErrorAction SilentlyContinue
 
-    Import-Module ..\powershell\GitHubActions -Force -ErrorAction SilentlyContinue
+    if (Get-module -name GitHubActions) {
+        ## Make sure the GH Actions module is installed from the Gallery
+        Remove-Module GitHubActions -Force -ErrorAction SilentlyContinue
+    }
+
+    ## Load up some common functionality for interacting
+    ## with the GitHub Actions/Workflow environment
+    Import-Module ..\powershell\GitHubActions -Force 
 
     Ensure-PowershellDependencies
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
