@@ -117,7 +117,7 @@ function Ensure-PowershellDependencies {
     #Import-Module PackageManagement
     #Register-PackageSource -Name NuGet -ProviderName NuGet -Location https://www.nuget.org/api/v2/  -Trusted -Force:$true -Confirm:$false
 
-    Install-PackageProvider -Name "NuGet" -Force -ForceBootstrap -Scope CurrentUser -MinimumVersion 2.8.5.208
+    Install-PackageProvider -Name "NuGet" -Force -ForceBootstrap -Scope CurrentUser -MinimumVersion 2.8.5.208 -ErrorAction SilentlyContinue
 
     # plain Win10 has older and less robust PackageManagment and PowerShellGet modules by default;
     # update the current user to modern versions that work more reliable with PSGallery and Nuget:
