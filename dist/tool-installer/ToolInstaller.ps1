@@ -89,8 +89,8 @@ function Install-NuGetPackage {
     } else {
         Write-Verbose "Found package already installed, nothing to do."
     }
-    Write-Host PowerPlatformTools_$($PackageName.Replace('.','_'))
-    Set-ActionVariable PowerPlatformTools_$($PackageName.Replace('.','_')) $savedPackagePath
+
+    Set-VstsTaskVariable -Name PowerPlatformTools_$($PackageName.Replace('.','_')) -Value $savedPackagePath
 }
 
 function Declare-EmbeddedModule {
