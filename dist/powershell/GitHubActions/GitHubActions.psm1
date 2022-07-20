@@ -25,10 +25,10 @@ function Set-ActionVariable {
         [string]$Value,
         [switch]$SkipLocal
     )
-
+   Set-TaskVariable -Name $Name -Value $Value
     ## To take effect only in the current action/step
    # if (-not $SkipLocal) {
-   [Environment]::SetEnvironmentVariable($Name, $Value, [System.EnvironmentVariableTarget]::Machine)
+   #[Environment]::SetEnvironmentVariable($Name, $Value, [System.EnvironmentVariableTarget]::Machine)
    #     [System.Environment]::SetEnvironmentVariable($Name, $Value)
   #  }
   
@@ -44,7 +44,7 @@ function Get-ActionVariable {
         [string]$Name
     )
 
-    return [System.Environment]::GetEnvironmentVariable($Name)
+    return  Get-TaskVariable -Name $Name   #[System.Environment]::GetEnvironmentVariable($Name)
 }
 <#
 .SYNOPSIS
