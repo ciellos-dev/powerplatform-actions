@@ -31,4 +31,4 @@ runs:
                                                                            -XrmToolingPackageDeploymentVersion ${{ inputs.XrmToolingPackageDeploymentVersion }} `
                                                                            -MicrosoftPowerAppsCheckerVersion ${{ inputs.MicrosoftPowerAppsCheckerVersion }} `
                                                                            -CrmSdkCoreToolsVersion ${{ inputs.CrmSdkCoreToolsVersion }} 
-      shell: pwsh
+      shell: powershell
