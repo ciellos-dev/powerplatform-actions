@@ -10,7 +10,7 @@ jobs:
       - name: script 1
         shell: pwsh
         run: |
-          Import-Module dist/psmodules/VstsTaskSdk
+          Import-Module ${{ github.workspace }}\dist\ps_modules\VstsTaskSdk
           Set-VstsTaskVariable -Name "TestVar" -Value "TestValue1"
 
       - name: Run a multi-line script
