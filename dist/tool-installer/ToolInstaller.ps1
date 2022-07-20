@@ -153,18 +153,13 @@ try {
         ## Make sure the GH Actions module is installed from the Gallery
         Remove-Module GitHubActions -Force -ErrorAction SilentlyContinue
     }
-
-    ## Load up some common functionality for interacting
-    ## with the GitHub Actions/Workflow environment
-    ls
-    Import-Module  "\dist\powershell\GitHubActions" -Force 
-
+    
     Ensure-PowershellDependencies
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
     
     Write-Verbose "PS-Version: $($PSVersionTable.PSVersion) - $($PSVersionTable.PSEdition)"
-    ("ps_modules\VstsTaskSdk", "SharedFunctions.psm1") `
-        | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
+    ("..\powershell\GitHubActions", "ps_modules\VstsTaskSdk", "SharedFunctions.psm1") `
+        | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module -Force
 
     #$defaultVersion = Get-VSTSInput -Name "DefaultVersion" -AsBool
     #$taskJson = Join-Path -Path $PSScriptRoot "task.json"
