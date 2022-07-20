@@ -113,8 +113,8 @@ function Declare-EmbeddedModule {
 
 function Ensure-PowershellDependencies {
     # base dependency for e.g. PowerShellGet
-    Set-ItemProperty -Path 'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319' -Name 'SchUseStrongCrypto' -Value '1' -Type DWord
-    Import-Module PackageManagement
+    #Set-ItemProperty -Path 'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NetFramework\v4.0.30319' -Name 'SchUseStrongCrypto' -Value '1' -Type DWord
+    #Import-Module PackageManagement
     #Register-PackageSource -Name NuGet -ProviderName NuGet -Location https://www.nuget.org/api/v2/  -Trusted -Force:$true -Confirm:$false
 
     Install-PackageProvider -Name "NuGet" -Force -ForceBootstrap -Scope CurrentUser -MinimumVersion 2.8.5.208
@@ -157,11 +157,11 @@ try {
     ## with the environment.  The `GitHubActions` module makes this
     ## easier and more natural by wrapping up access to the Workflow
     ## environment in PowerShell-friendly constructions and idioms
-    if (-not (Get-Module -ListAvailable GitHubActions)) {
+    #if (-not (Get-Module -ListAvailable GitHubActions)) {
         ## Make sure the GH Actions module is installed from the Gallery
-        Install-Module GitHubActions -Force
-    }
-    Import-Module GitHubActions
+     #   Install-Module GitHubActions -Force
+    #}
+    #Import-Module GitHubActions
 
     #$defaultVersion = Get-VSTSInput -Name "DefaultVersion" -AsBool
     #$taskJson = Join-Path -Path $PSScriptRoot "task.json"
