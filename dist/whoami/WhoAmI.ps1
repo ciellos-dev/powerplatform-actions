@@ -1,7 +1,16 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 
 [CmdletBinding()]
-param([Parameter()])
+param([Parameter()]
+    [string]$EnvironmentUrl,
+    [string]$Username,
+    [string]$PasswordSecret,
+    [string]$AppId,
+    [string]$ClientSecret,
+    [string]$TenantId,
+    [string]$Cloud
+
+)
 
 function Invoke-WhoAmI {
     [CmdletBinding()]
@@ -28,27 +37,31 @@ try {
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
     $redirector = Get-BindingRedirector
 
-    ## You interface with the Actions/Workflow system by interacting
-    ## with the environment.  The `GitHubActions` module makes this
-    ## easier and more natural by wrapping up access to the Workflow
-    ## environment in PowerShell-friendly constructions and idioms
-    if (-not (Get-Module -ListAvailable GitHubActions)) {
-        ## Make sure the GH Actions module is installed from the Gallery
-        Install-Module GitHubActions -Force
-    }
-
-    ## Load up some common functionality for interacting
-    ## with the GitHub Actions/Workflow environment
-    Import-Module GitHubActions
-        $environment_url = Get-ActionInput "environment-url" -Required
-
-    Write-Host "EvUrl is " $environment_url
-
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell" -Verbose
 
 
     # Get input parameters and credentials
-    $authInfo = Get-AuthInfoFromActiveServiceConnection
+    $authInfo = null#Get-AuthInfoFromActiveServiceConnection
+
+    $PSCredential = New-Object System.Management.Automation.PSCredential ($Username, (ConvertTo-SecureString $PasswordSecret -AsPlainText -Force))
+    if ($selectedAuthName -eq "PowerPlatformEnvironment") {
+        # Write-Verbose "selected authN using username/password ($($selectedAuthName))."
+         $authInfo = @{
+            EnvironmentUrl  = $EnvironmentUrl
+            Credential      = $PSCredential
+            TenantId        = $null
+            AuthType        = 'OAuth'
+        }
+    } elseif ($selectedAuthName -eq "PowerPlatformSPN") {
+        # Write-Verbose "selected authN using SPN ($($selectedAuthName))."
+        $credInfo = Get-SpnInfoServiceConnection $serviceConnection
+        $authInfo = @{
+            EnvironmentUrl  = $EnvironmentUrl
+            Credential      = $PSCredential
+            TenantId        = $TenantId
+            AuthType        = 'ClientSecret'
+        }
+    }
 
     Write-AuthLog -AuthInfo $authInfo
     Invoke-WhoAmI $authInfo

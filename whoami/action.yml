@@ -39,5 +39,12 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - run: ${{ github.action_path }}\..\dist\whoami\WhoAmI.ps1
+    - run: |
+        ${{ github.action_path }}\..\dist\whoami\WhoAmI.ps1 -EnvironmentUrl ${{ inputs.environment-url }} `
+                                                               -Username ${{ inputs.user-name }} `
+                                                               -PasswordSecret ${{ inputs.password-secret }} `
+                                                               -AppId ${{ inputs.app-id }} `
+                                                               -ClientSecret ${{ inputs.client-secret }} `
+                                                               -TenantId ${{ inputs.tenant-id }} `
+                                                               -Cloud ${{ inputs.cloud }} 
       shell: powershell
