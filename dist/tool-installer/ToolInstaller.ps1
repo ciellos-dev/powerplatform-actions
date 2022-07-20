@@ -37,7 +37,6 @@ function Install-PowerShellModule {
     } else {
         Write-Verbose "Found module already installed, nothing to do."
     }
-    Write-Host PowerPlatformTools_$($ModuleName.Replace('.','_'))
     #Set-ActionVariable PowerPlatformTools_$($ModuleName.Replace('.','_')) ([IO.Path]::GetDirectoryName($($fixedModulePath)))
     Set-VstsTaskVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_')) -Value ([IO.Path]::GetDirectoryName($($fixedModulePath)))
     Get-VstsTaskVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_'))
@@ -101,7 +100,7 @@ function Declare-EmbeddedModule {
     )
 
     begin {
-        $embeddedModulePath = Join-Path $PSScriptRoot "ps_modules"
+        $embeddedModulePath = Join-Path $PSScriptRoot "..\ps_modules"
     }
 
     process {
@@ -109,8 +108,8 @@ function Declare-EmbeddedModule {
             Write-Host PowerPlatformTools_$($ModuleName.Replace('.','_')) 
            # Set-ActionVariable PowerPlatformTools_$($ModuleName.Replace('.','_')) $embeddedModulePath
             #Get-ActionVariable PowerPlatformTools_$($ModuleName.Replace('.','_')) 
-            Set-TaskVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_')) -Value $embeddedModulePath
-            Get-TaskVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_'))
+            Set-VstsTaskVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_')) -Value $embeddedModulePath
+            Get-VstsTaskVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_'))
         }
         else {
             Write-Error "Embedded module $ModuleName not found on path $embeddedModulePath"
@@ -161,7 +160,7 @@ try {
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
     
     Write-Verbose "PS-Version: $($PSVersionTable.PSVersion) - $($PSVersionTable.PSEdition)"
-    ("..\powershell\VstsTaskSdk", "SharedFunctions.psm1") `
+    ("..\ps_modules\VstsTaskSdk", "SharedFunctions.psm1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module -Force
 
     #$defaultVersion = Get-VSTSInput -Name "DefaultVersion" -AsBool
