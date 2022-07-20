@@ -33,7 +33,14 @@ function Invoke-WhoAmI {
 }
 
 try {
-    ("ps_modules\VstsTaskSdk",  "SharedFunctions.psm1", "Get-ParameterValue.ps1") `
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+    if (Get-module -name GitHubActions) {
+        ## Make sure the GH Actions module is installed from the Gallery
+        Remove-Module GitHubActions -Force -ErrorAction SilentlyContinue
+    }
+
+    ("..\powershell\GitHubActions", "ps_modules\VstsTaskSdk",  "SharedFunctions.psm1", "Get-ParameterValue.ps1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
     $redirector = Get-BindingRedirector
 
