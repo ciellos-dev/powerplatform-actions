@@ -145,18 +145,9 @@ function Ensure-PowershellDependencies {
 
 try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    ## You interface with the Actions/Workflow system by interacting
-    ## with the environment.  The `GitHubActions` module makes this
-    ## easier and more natural by wrapping up access to the Workflow
-    ## environment in PowerShell-friendly constructions and idioms
-    if (-not (Get-Module -ListAvailable GitHubActions)) {
-        ## Make sure the GH Actions module is installed from the Gallery
-        Install-Module GitHubActions -Force
-    }
 
-    ## Load up some common functionality for interacting
-    ## with the GitHub Actions/Workflow environment
-    Import-Module GitHubActions -ErrorAction SilentlyContinue
+    Install-Module ..\powershell\GitHubActions -Force
+    Import-Module ..\powershell\GitHubActions -Force -ErrorAction SilentlyContinue
 
     Ensure-PowershellDependencies
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
