@@ -40,9 +40,11 @@ function Import-PowerPlatformToolsPowerShellModule {
 
     begin {
         $taskVariable = "PowerPlatformTools_$($ModuleName.Replace('.','_'))"
+        Write-Host $taskVariable
     }
 
     process {
+        Write-Host $taskVariable
         $newModulePath = Get-ActionInput -Name $taskVariable
         if ([string]::IsNullOrWhiteSpace($newModulePath)) {
             throw "$taskVariable is not defined. Please add the 'Power Platform Tool Installer' task before adding any other 'Power Platform' tasks in your pipeline"

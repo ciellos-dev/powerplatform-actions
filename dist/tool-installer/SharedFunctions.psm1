@@ -40,6 +40,7 @@ function Import-PowerPlatformToolsPowerShellModule {
 
     begin {
         $taskVariable = "PowerPlatformTools_$($ModuleName.Replace('.','_'))"
+        Write-Host $taskVariable
     }
 
     process {
