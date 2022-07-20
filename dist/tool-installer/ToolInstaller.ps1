@@ -157,7 +157,7 @@ try {
     ## Load up some common functionality for interacting
     ## with the GitHub Actions/Workflow environment
 
-    Import-Module dist\powershell\GitHubActions -Force 
+    Import-Module  "$env:GITHUB_WORKSPACE\dist\powershell\GitHubActions" -Force 
 
     Ensure-PowershellDependencies
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
