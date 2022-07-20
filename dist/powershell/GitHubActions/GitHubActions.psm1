@@ -27,12 +27,12 @@ function Set-ActionVariable {
     )
 
     ## To take effect only in the current action/step
-    if (-not $SkipLocal) {
+   # if (-not $SkipLocal) {
         [System.Environment]::SetEnvironmentVariable($Name, $Value)
-    }
+  #  }
 
     ## To take effect for all subsequent actions/steps
-    Write-ActionEnvVariable -Name $Name -Value $Value
+  #  Write-ActionEnvVariable -Name $Name -Value $Value
 }
 
 
@@ -102,7 +102,7 @@ Whether the input is required. If required and not present, will throw.
 .LINK
 https://github.com/actions/toolkit/tree/a6e72497764b1cf53192eb720f551d7f0db3a4b4/packages/core#inputsoutputs
 #>
-function Get-ActionVariable {
+function Get-ActionInput {
     param(
         [Parameter(Position=0, Mandatory)]
         [string]$Name,
@@ -127,7 +127,7 @@ behavior of individual input lookup.
 .LINK
 https://github.com/actions/toolkit/tree/a6e72497764b1cf53192eb720f551d7f0db3a4b4/packages/core#inputsoutputs
 #>
-function Get-ActionVariables {
+function Get-ActionInputs {
     ## This makes sure the returned map looks up keys case-insensitively
     $inputsMap = [hashtable]::new([StringComparer]::OrdinalIgnoreCase)
 
