@@ -146,7 +146,6 @@ function Ensure-PowershellDependencies {
 try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-    Install-Module ..\powershell\GitHubActions -Force
     Import-Module ..\powershell\GitHubActions -Force -ErrorAction SilentlyContinue
 
     Ensure-PowershellDependencies
