@@ -16,4 +16,5 @@ jobs:
       - name: Run a multi-line script
         shell: pwsh
         run: |
+          Import-Module ${{ github.workspace }}\dist\ps_modules\VstsTaskSdk
           Get-VstsTaskVariable -Name "TestVar"
