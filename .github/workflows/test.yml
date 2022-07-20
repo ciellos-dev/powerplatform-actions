@@ -8,10 +8,12 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: script 1
+        shell: pwsh
         run: |
           Import-Module dist/psmodules/VstsTaskSdk
           Set-VstsTaskVariable -Name "TestVar" -Value "TestValue1"
 
       - name: Run a multi-line script
+        shell: pwsh
         run: |
           Get-VstsTaskVariable -Name "TestVar"
