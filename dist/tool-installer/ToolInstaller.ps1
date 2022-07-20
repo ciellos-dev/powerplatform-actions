@@ -38,7 +38,7 @@ function Install-PowerShellModule {
         Write-Verbose "Found module already installed, nothing to do."
     }
 
-    Set-VstsTaskVariable PowerPlatformTools_$($ModuleName.Replace('.','_')) ([IO.Path]::GetDirectoryName($($fixedModulePath)))
+    Set-ActionVariable PowerPlatformTools_$($ModuleName.Replace('.','_')) ([IO.Path]::GetDirectoryName($($fixedModulePath)))
 }
 
 
@@ -88,7 +88,7 @@ function Install-NuGetPackage {
         Write-Verbose "Found package already installed, nothing to do."
     }
 
-    Set-VstsTaskVariable PowerPlatformTools_$($PackageName.Replace('.','_')) $savedPackagePath
+    Set-ActionVariable PowerPlatformTools_$($PackageName.Replace('.','_')) $savedPackagePath
 }
 
 function Declare-EmbeddedModule {
@@ -103,7 +103,7 @@ function Declare-EmbeddedModule {
 
     process {
         if (Test-Path (Join-Path $embeddedModulePath $ModuleName)) {
-            Set-VstsTaskVariable PowerPlatformTools_$($ModuleName.Replace('.','_')) $embeddedModulePath
+            Set-ActionVariable PowerPlatformTools_$($ModuleName.Replace('.','_')) $embeddedModulePath
         }
         else {
             Write-Error "Embedded module $ModuleName not found on path $embeddedModulePath"

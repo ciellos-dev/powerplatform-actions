@@ -122,7 +122,7 @@ If not specified, defaults to the directory of the entry script for the task.
 $credentials = Get-VstsTfsClientCredentials
 Add-Type -LiteralPath "$PSScriptRoot\Microsoft.TeamFoundation.VersionControl.Client.dll"
 $tfsTeamProjectCollection = New-Object Microsoft.TeamFoundation.Client.TfsTeamProjectCollection(
-    (Get-VstsTaskVariable -Name 'System.TeamFoundationCollectionUri' -Require),
+    (Get-ActionInput -Name 'System.TeamFoundationCollectionUri' -Require),
     $credentials)
 $versionControlServer = $tfsTeamProjectCollection.GetService([Microsoft.TeamFoundation.VersionControl.Client.VersionControlServer])
 $versionControlServer.GetItems('$/*').Items | Format-List
@@ -257,7 +257,7 @@ If not specified, defaults to the directory of the entry script for the task.
 # to avoid managing the binding redirect.
 #
 $vssCredentials = Get-VstsVssCredentials
-$collectionUrl = New-Object System.Uri((Get-VstsTaskVariable -Name 'System.TeamFoundationCollectionUri' -Require))
+$collectionUrl = New-Object System.Uri((Get-ActionInput -Name 'System.TeamFoundationCollectionUri' -Require))
 Add-Type -LiteralPath "$PSScriptRoot\Microsoft.TeamFoundation.Core.WebApi.dll"
 $projectHttpClient = New-Object Microsoft.TeamFoundation.Core.WebApi.ProjectHttpClient($collectionUrl, $vssCredentials)
 $projectHttpClient.GetProjects().Result

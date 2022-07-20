@@ -14,7 +14,7 @@ function Get-UrlFromEnvironmentVariables {
     )
 
     begin{
-        $url = Get-VstsTaskVariable -Name $BuildToolEnvironmentUrl
+        $url = Get-ActionInput -Name $BuildToolEnvironmentUrl
     }
     process{
         if ([string]::IsNullOrWhiteSpace($url)) {
@@ -39,10 +39,10 @@ function Set-EnvironmentInfo {
         $prefix = Get-LogPrefix
     }
     process {
-            Set-VstsTaskVariable -Name $BuildToolEnvironmentUrl -Value $EnvironmentUrl
-            Set-VstsTaskVariable -Name $BuildToolEnvironmentId -Value $EnvironmentId
-            Set-VstsTaskVariable -Name $BuildToolOrganizationId -Value $OrganizationId
-            Set-VstsTaskVariable -Name $BuildToolOrgUniqueName -Value $OrgUniqueName
+            Set-ActionVariable -Name $BuildToolEnvironmentUrl -Value $EnvironmentUrl
+            Set-ActionVariable -Name $BuildToolEnvironmentId -Value $EnvironmentId
+            Set-ActionVariable -Name $BuildToolOrganizationId -Value $OrganizationId
+            Set-ActionVariable -Name $BuildToolOrgUniqueName -Value $OrgUniqueName
     }
     end {
         Write-Information -MessageData $decorator
