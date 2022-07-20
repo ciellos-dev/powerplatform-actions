@@ -28,7 +28,7 @@ function Set-ActionVariable {
 
     ## To take effect only in the current action/step
    # if (-not $SkipLocal) {
-   [Environment]::SetEnvironmentVariable($Name, $Value, [System.EnvironmentVariableTarget]::Process)
+   [Environment]::SetEnvironmentVariable($Name, $Value, [System.EnvironmentVariableTarget]::Machine)
    #     [System.Environment]::SetEnvironmentVariable($Name, $Value)
   #  }
   
