@@ -45,7 +45,6 @@ try {
 
     $PSCredential = New-Object System.Management.Automation.PSCredential ($Username, (ConvertTo-SecureString $PasswordSecret -AsPlainText -Force))
     if ($selectedAuthName -eq "PowerPlatformEnvironment") {
-        # Write-Verbose "selected authN using username/password ($($selectedAuthName))."
          $authInfo = @{
             EnvironmentUrl  = $EnvironmentUrl
             Credential      = $PSCredential
@@ -53,8 +52,7 @@ try {
             AuthType        = 'OAuth'
         }
     } elseif ($selectedAuthName -eq "PowerPlatformSPN") {
-        # Write-Verbose "selected authN using SPN ($($selectedAuthName))."
-        $credInfo = Get-SpnInfoServiceConnection $serviceConnection
+
         $authInfo = @{
             EnvironmentUrl  = $EnvironmentUrl
             Credential      = $PSCredential
