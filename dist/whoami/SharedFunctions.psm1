@@ -44,6 +44,10 @@ function Import-PowerPlatformToolsPowerShellModule {
     }
 
     process {
+        
+
+
+        Write-Host Get-VstsTaskVariable -Name $taskVariable
         Write-Host $taskVariable
         $newModulePath = Get-ActionInput -Name $taskVariable
         if ([string]::IsNullOrWhiteSpace($newModulePath)) {
