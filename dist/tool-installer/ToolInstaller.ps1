@@ -37,7 +37,7 @@ function Install-PowerShellModule {
     } else {
         Write-Verbose "Found module already installed, nothing to do."
     }
-
+    Write-Host PowerPlatformTools_$($ModuleName.Replace('.','_'))
     Set-ActionVariable PowerPlatformTools_$($ModuleName.Replace('.','_')) ([IO.Path]::GetDirectoryName($($fixedModulePath)))
 }
 
@@ -87,7 +87,7 @@ function Install-NuGetPackage {
     } else {
         Write-Verbose "Found package already installed, nothing to do."
     }
-
+    Write-Host PowerPlatformTools_$($PackageName.Replace('.','_'))
     Set-ActionVariable PowerPlatformTools_$($PackageName.Replace('.','_')) $savedPackagePath
 }
 
@@ -103,6 +103,7 @@ function Declare-EmbeddedModule {
 
     process {
         if (Test-Path (Join-Path $embeddedModulePath $ModuleName)) {
+            Write-Host PowerPlatformTools_$($ModuleName.Replace('.','_')) 
             Set-ActionVariable PowerPlatformTools_$($ModuleName.Replace('.','_')) $embeddedModulePath
         }
         else {
