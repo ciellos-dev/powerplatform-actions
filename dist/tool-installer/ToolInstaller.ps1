@@ -39,8 +39,8 @@ function Install-PowerShellModule {
     }
     Write-Host PowerPlatformTools_$($ModuleName.Replace('.','_'))
     #Set-ActionVariable PowerPlatformTools_$($ModuleName.Replace('.','_')) ([IO.Path]::GetDirectoryName($($fixedModulePath)))
-    Set-TaskVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_')) -Value ([IO.Path]::GetDirectoryName($($fixedModulePath)))
-    Get-TaskVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_'))
+    Set-VstsTaskVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_')) -Value ([IO.Path]::GetDirectoryName($($fixedModulePath)))
+    Get-VstsTaskVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_'))
     #Get-ActionVariable PowerPlatformTools_$($ModuleName.Replace('.','_'))
 }
 

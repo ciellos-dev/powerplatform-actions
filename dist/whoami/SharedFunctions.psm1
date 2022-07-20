@@ -44,9 +44,9 @@ function Import-PowerPlatformToolsPowerShellModule {
 
     process {
         
-        Get-TaskVariable -Name  $taskVariable
+        Get-VstsTaskVariable -Name  $taskVariable
         Write-Host $taskVariable
-        $newModulePath = Get-TaskVariable -Name $taskVariable
+        $newModulePath = Get-VstsTaskVariable -Name $taskVariable
         if ([string]::IsNullOrWhiteSpace($newModulePath)) {
             throw "$taskVariable is not defined. Please add the 'Power Platform Tool Installer' task before adding any other 'Power Platform' tasks in your pipeline"
         }
