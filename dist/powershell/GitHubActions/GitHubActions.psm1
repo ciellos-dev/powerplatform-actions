@@ -28,8 +28,10 @@ function Set-ActionVariable {
 
     ## To take effect only in the current action/step
    # if (-not $SkipLocal) {
-        [System.Environment]::SetEnvironmentVariable($Name, $Value)
+   [Environment]::SetEnvironmentVariable($Name, $Value, [System.EnvironmentVariableTarget]::User)
+   #     [System.Environment]::SetEnvironmentVariable($Name, $Value)
   #  }
+  
 
     ## To take effect for all subsequent actions/steps
   #  Write-ActionEnvVariable -Name $Name -Value $Value
