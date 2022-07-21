@@ -70,7 +70,7 @@ function Invoke-ExportSolution {
 Trace-VstsEnteringInvocation $MyInvocation
 try {
     # Load shared functions and other dependencies
-    ("SharedFunctions.psm1", "Get-ParameterValue.ps1") `
+    ("..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
     $redirector = Get-BindingRedirector
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell"

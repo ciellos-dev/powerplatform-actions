@@ -101,7 +101,7 @@ function Restore-Environment {
 
 Trace-VstsEnteringInvocation $MyInvocation
 try {
-    ("SharedFunctions.psm1", "Get-ParameterValue.ps1") `
+    ("..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module -Force
     $redirector = Get-BindingRedirector
 
