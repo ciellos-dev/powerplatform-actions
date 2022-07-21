@@ -14,13 +14,14 @@ param(
 function Invoke-SetSolutionVersion {
     [CmdletBinding()]
     param (
-        [parameter (Mandatory = $true)][string]$authInfo,
+        [parameter (Mandatory = $true)][Hashtable]$authInfo,
         [parameter (Mandatory = $true)][string]$SolutionName,
         [parameter (Mandatory = $true)][string]$NewSolutionVersion
     )
 
     begin {
         #Setup parameter hash table
+        Write-Host "Start Set-SolutionVersion process...."
         $Parameters = . Get-ParameterValue -Verbose
     }
 
