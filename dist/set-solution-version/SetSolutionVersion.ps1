@@ -35,7 +35,7 @@ function Invoke-SetSolutionVersion {
 
 try {
     # Load shared functions and other dependencies
-    ("..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1") `
+    ("..\ps_modules\VstsTaskSdk", "..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
     $redirector = Get-BindingRedirector
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell"
