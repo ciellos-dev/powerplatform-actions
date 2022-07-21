@@ -43,6 +43,9 @@ function Get-ParameterValue {
                     }
                 }
             }
+            catch{
+                Write-Host $Error
+            }
             finally { }
         }
     }

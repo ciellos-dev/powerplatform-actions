@@ -9,7 +9,6 @@ param([Parameter()]
     [string]$ClientSecret,
     [string]$TenantId,
     [string]$Cloud
-
 )
 
 function Invoke-WhoAmI {
@@ -20,11 +19,15 @@ function Invoke-WhoAmI {
 
     begin {
         #Setup parameter hash table
+        Write-Host "Test Invoke-WhoAmI"
         $Parameters = . Get-ParameterValue
     }
 
     process {
-        $output = Get-Who @Parameters -InformationAction Continue
+        Write-Host "Invoke Get-Who...."
+        #Write-Host "Parameters " @Parameters
+        #$output = Get-Who @Parameters
+        Write-Host "End Get-Who...."
     }
 
     end {
@@ -74,7 +77,13 @@ try {
     Write-ActionInfo "Invoke-WhoAmI...."
     Invoke-WhoAmI $authInfo
 
-} finally {
+} 
+catch{
+    Write-Host $Error
+}
+
+finally {
+    
     if ($null -ne $redirector) {
         $redirector.Dispose()
     }
