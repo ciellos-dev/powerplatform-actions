@@ -13,9 +13,11 @@ jobs:
           Import-Module ${{ github.workspace }}\dist\ps_modules\VstsTaskSdk
           Set-VstsTaskVariable -Name "TestVar" -Value "TestValue1"
           Get-VstsTaskVariable -Name "TestVar"
+          $env:TestVar2 = "testVar3"
 
       - name: Run a multi-line script
         shell: pwsh
         run: |
           Import-Module ${{ github.workspace }}\dist\ps_modules\VstsTaskSdk
           Get-VstsTaskVariable -Name "TestVar"
+          $env:TestVar2
