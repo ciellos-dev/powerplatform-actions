@@ -26,7 +26,7 @@ function Invoke-WhoAmI {
     process {
         Write-Host "Invoke Get-Who...."
         #Write-Host "Parameters " @Parameters
-        #$output = Get-Who @Parameters
+        $output = Get-Who @Parameters
         Write-Host "End Get-Who...."
     }
 
