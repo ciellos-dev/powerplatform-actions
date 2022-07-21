@@ -48,7 +48,7 @@ try {
 
     Write-ActionInfo "Gathering Credentials...."
     # Get input parameters and credentials
-    $authInfo = null#Get-AuthInfoFromActiveServiceConnection
+    $authInfo = '' 
 
     $PSCredential = New-Object System.Management.Automation.PSCredential ($Username, (ConvertTo-SecureString $PasswordSecret -AsPlainText -Force))
     #if ($selectedAuthName -eq "PowerPlatformEnvironment") {
