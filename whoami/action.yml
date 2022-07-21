@@ -32,10 +32,6 @@ inputs:
     required: false
     default: 'Public'
 
-outputs:
-  environment-id:
-    value: ${{ steps.whoami.outputs.envId }}
-
 runs:
   using: "composite"
   steps:
