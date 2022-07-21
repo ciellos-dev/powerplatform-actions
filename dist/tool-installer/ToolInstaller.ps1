@@ -37,10 +37,7 @@ function Install-PowerShellModule {
     } else {
         Write-Verbose "Found module already installed, nothing to do."
     }
-    #Set-ActionVariable PowerPlatformTools_$($ModuleName.Replace('.','_')) ([IO.Path]::GetDirectoryName($($fixedModulePath)))
     Set-ActionVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_')) -Value ([IO.Path]::GetDirectoryName($($fixedModulePath)))
-    Get-ActionVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_'))
-    #Get-ActionVariable PowerPlatformTools_$($ModuleName.Replace('.','_'))
 }
 
 
@@ -105,11 +102,7 @@ function Declare-EmbeddedModule {
 
     process {
         if (Test-Path (Join-Path $embeddedModulePath $ModuleName)) {
-            Write-Host PowerPlatformTools_$($ModuleName.Replace('.','_')) 
-           # Set-ActionVariable PowerPlatformTools_$($ModuleName.Replace('.','_')) $embeddedModulePath
-            #Get-ActionVariable PowerPlatformTools_$($ModuleName.Replace('.','_')) 
             Set-ActionVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_')) -Value $embeddedModulePath
-            Get-ActionVariable -Name PowerPlatformTools_$($ModuleName.Replace('.','_'))
         }
         else {
             Write-Error "Embedded module $ModuleName not found on path $embeddedModulePath"

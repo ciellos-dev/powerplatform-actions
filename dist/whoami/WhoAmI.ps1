@@ -39,27 +39,28 @@ try {
         ## Make sure the GH Actions module is installed from the Gallery
         Remove-Module GitHubActions -Force -ErrorAction SilentlyContinue
     }
-
+    Write-ActionInfo "Importing base modules...."
     ("..\ps_modules\GitHubActions", "..\ps_modules\VstsTaskSdk", "SharedFunctions.psm1", "Get-ParameterValue.ps1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
     $redirector = Get-BindingRedirector
+    Write-ActionInfo "Importing Microsoft.Xrm.WebApi.PowerShell...."
+    Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell"
 
-    Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell" -Verbose
-
-
+    Write-ActionInfo "Gathering Credentials...."
     # Get input parameters and credentials
     $authInfo = null#Get-AuthInfoFromActiveServiceConnection
 
     $PSCredential = New-Object System.Management.Automation.PSCredential ($Username, (ConvertTo-SecureString $PasswordSecret -AsPlainText -Force))
-    if ($selectedAuthName -eq "PowerPlatformEnvironment") {
+    #if ($selectedAuthName -eq "PowerPlatformEnvironment") {
+    if(-not ($ClientSecret -eq "")){
          $authInfo = @{
             EnvironmentUrl  = $EnvironmentUrl
             Credential      = $PSCredential
             TenantId        = $null
             AuthType        = 'OAuth'
         }
-    } elseif ($selectedAuthName -eq "PowerPlatformSPN") {
-
+    #} elseif ($selectedAuthName -eq "PowerPlatformSPN") {
+    else{
         $authInfo = @{
             EnvironmentUrl  = $EnvironmentUrl
             Credential      = $PSCredential
@@ -69,6 +70,7 @@ try {
     }
 
     Write-AuthLog -AuthInfo $authInfo
+    Write-ActionInfo "Invoke-WhoAmI...."
     Invoke-WhoAmI $authInfo
 
 } finally {
