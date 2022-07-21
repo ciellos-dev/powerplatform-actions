@@ -36,7 +36,6 @@ runs:
   using: "composite"
   steps:
     - run: |
-      id: whoami
         $output = ${{ github.action_path }}\..\dist\whoami\WhoAmI.ps1 -EnvironmentUrl ${{ inputs.environment-url }} `
                                                                -Username ${{ inputs.user-name }} `
                                                                -PasswordSecret ${{ inputs.password-secret }} `
@@ -46,3 +45,4 @@ runs:
                                                                -Cloud ${{ inputs.cloud }} 
         Set-Output "envId" $output.EnvironmentId
       shell: powershell
+      id: whoami
