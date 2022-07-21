@@ -34,17 +34,19 @@ inputs:
 
 outputs:
   environment-id:
-    description: ID of the environment connected with
+    value: ${{ steps.whoami.outputs.envId }}
 
 runs:
   using: "composite"
   steps:
     - run: |
-        ${{ github.action_path }}\..\dist\whoami\WhoAmI.ps1 -EnvironmentUrl ${{ inputs.environment-url }} `
+      id: whoami
+        $output = ${{ github.action_path }}\..\dist\whoami\WhoAmI.ps1 -EnvironmentUrl ${{ inputs.environment-url }} `
                                                                -Username ${{ inputs.user-name }} `
                                                                -PasswordSecret ${{ inputs.password-secret }} `
                                                                -AppId ${{ inputs.app-id }} `
                                                                -ClientSecret ${{ inputs.client-secret }} `
                                                                -TenantId ${{ inputs.tenant-id }} `
                                                                -Cloud ${{ inputs.cloud }} 
+        Set-Output "envId" $output.EnvironmentId
       shell: powershell

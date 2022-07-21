@@ -19,15 +19,11 @@ function Invoke-WhoAmI {
 
     begin {
         #Setup parameter hash table
-        Write-Host "Test Invoke-WhoAmI"
         $Parameters = . Get-ParameterValue
     }
 
     process {
-        Write-Host "Invoke Get-Who...."
-        #Write-Host "Parameters " @Parameters
         $output = Get-Who @Parameters
-        Write-Host "End Get-Who...."
     }
 
     end {
@@ -49,7 +45,6 @@ try {
     $redirector = Get-BindingRedirector
     Write-VstsTaskVerbose "Importing Microsoft.Xrm.WebApi.PowerShell...."
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell"
-
     Write-VstsTaskVerbose "Gathering Credentials...."
     # Get input parameters and credentials
     $authInfo = '' 
@@ -77,7 +72,6 @@ try {
     Write-AuthLog -AuthInfo $authInfo
     Write-VstsTaskVerbose "Invoke-WhoAmI...."
     Invoke-WhoAmI $authInfo
-
 } 
 catch{
     Write-Host $Error

@@ -46,7 +46,15 @@ function Set-ActionVariable {
     ## To take effect for all subsequent actions/steps
   #  Write-ActionEnvVariable -Name $Name -Value $Value
 }
-
+function Set-Output {
+    param(
+        [Parameter(Position=0, Mandatory)]
+        [string]$Name,
+        [Parameter(Position=1, Mandatory)]
+        [string]$Value
+    )
+    echo "::set-output name=$($Name)::$($Value)"
+}
 
 function Get-ActionVariable {
     param(
