@@ -69,7 +69,7 @@ try {
     $solutionVersionNumber = $NewSolutionVersion
 
     Write-AuthLog -AuthInfo $authInfo
-    $result = Invoke-SetSolutionVersion $authInfo -SolutionName $solutionName -NewSolutionVersion $solutionVersionNumber
+    $result = Invoke-SetSolutionVersion -authInfo $authInfo -SolutionName $solutionName -NewSolutionVersion $solutionVersionNumber
     Write-Verbose "SetSolutionVersion result: $($result.Attributes)"
 }
 finally {
