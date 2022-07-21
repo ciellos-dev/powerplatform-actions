@@ -1,105 +1,105 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 
-function Get-VstsInputWithDefault {
-    param(
-        [string][ValidateNotNullOrEmpty()] $Name,
-        [string][ValidateNotNullOrEmpty()] $taskJsonFile,
-        [switch] $AsBool = $false,
-        [switch] $AsInt = $false,
-        [switch] $DefaultValue = $false
+$BuildToolEnvironmentUrl = "BuildTools.EnvironmentUrl"
+$BuildToolEnvironmentId = "BuildTools.EnvironmentId"
+$BuildToolOrganizationId = "BuildTools.OrganizationId"
+$BuildToolOrgUniqueName = "BuildTools.OrgUniqueName"
+
+$InformationPreference = 'Continue'
+
+function Get-UrlFromEnvironmentVariables {
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory = $true)] $EnvironmentUrl
     )
 
-    begin {
-        # TODO: cache taskSettings per task.json file path
-        $taskSettings = Get-TaskInputProperties -JsonFilePath $taskJsonFile
+    begin{
+        $url = Get-ActionInput -Name $BuildToolEnvironmentUrl
     }
-
-    process {
-        $taskSetting = $taskSettings | Where-Object { $_.name -eq $Name }
-        if (!$taskSetting) {
-            Write-Error "Cannot find input definition for $Name in file: $taskJsonFile"
-            return
-        }
-        $value = Get-VSTSInput -Name $Name
-        if ([String]::IsNullOrEmpty($value) -or $DefaultValue) {
-            $value = $taskSetting.defaultValue
-            if ([String]::IsNullOrEmpty($value) -and $taskSetting.required) {
-                Write-Error "Input definition for $Name in file: $taskJsonFile is required, but no actual value nor a default value was provided!"
-            }
+    process{
+        if ([string]::IsNullOrWhiteSpace($url)) {
+            $url = $EnvironmentUrl
         }
     }
-
-    end {
-        function Get-BoolFromString {
-            param(
-                [string][ValidateNotNullOrEmpty()]$StringInput,
-                [bool]$FallbackValue = $false
-            )
-
-            $parsedBool = $null
-            if ([bool]::TryParse($stringInput, [ref]$parsedBool)) {
-            }
-            else {
-                $parsedBool = $DefaultValue
-            }
-            return $parsedBool
-        }
-
-        function Get-IntFromString {
-            param(
-                [string][ValidateNotNullOrEmpty()]$StringInput,
-                [int]$FallbackValue = -1
-            )
-
-            $parsedInt = $null
-            if ([int]::TryParse($stringInput, [ref]$parsedInt)) {
-            }
-            else {
-                $parsedInt = $DefaultValue
-            }
-            return $parsedInt
-        }
-
-        if ($AsBool) {
-            return Get-BoolFromString -StringInput $value
-        }
-        elseif ($AsInt) {
-            return Get-IntFromString -StringInput $value
-        }
-        return $value
+    end{
+        return $url
     }
 }
 
-function Get-TaskInputProperties {
+
+function Set-ActionVariable {
+    param(
+        [Parameter(Position=0, Mandatory)]
+        [string]$Name,
+        [Parameter(Position=1, Mandatory)]
+        [string]$Value,
+        [switch]$SkipLocal
+    )
+    "$([string]$Name)=$([string]$Value)" >> $ENV:GITHUB_ENV
+    ## To take effect only in the current action/step
+   # if (-not $SkipLocal) {
+   #[Environment]::SetEnvironmentVariable($Name, $Value, [System.EnvironmentVariableTarget]::Machine)
+   [System.Environment]::SetEnvironmentVariable($Name, $Value)
+  #  }
+  
+
+    ## To take effect for all subsequent actions/steps
+  #  Write-ActionEnvVariable -Name $Name -Value $Value
+}
+
+
+function Get-ActionVariable {
+    param(
+        [Parameter(Position=0, Mandatory)]
+        [string]$Name
+    )
+    $inputValue = Get-ChildItem "Env:$($Name)" -ErrorAction SilentlyContinue
+    if ($Required -and (-not $inputValue)) {
+        throw "Input required and not supplied: $($Name)"
+    }
+
+    return "$($inputValue.Value)".Trim()
+  #  Write-Host "VarName is: "$Name
+ #   return  (get-item env:$Name).Value   #[System.Environment]::GetEnvironmentVariable($Name)
+}
+
+
+
+
+function Set-EnvironmentInfo {
     [CmdletBinding()]
     param (
-        [parameter(Mandatory = $true)][string]$JsonFilePath
+        [parameter(Mandatory = $true)][ValidateNotNullOrEmpty()][string] $EnvironmentUrl,
+        [parameter(Mandatory = $true)][ValidateNotNullOrEmpty()][string] $EnvironmentId,
+        [parameter(Mandatory = $true)][ValidateNotNullOrEmpty()][string] $OrganizationId,
+        [parameter(Mandatory = $true)][ValidateNotNullOrEmpty()][string] $OrgUniqueName
     )
-
     begin {
-        if (!(Test-Path -Path $JsonFilePath)) {
-            throw "Could not locate task.json in the path: $JsonFilePath"
-        }
-        $properties= $null
+        $decorator = Get-Decorator
+        $prefix = Get-LogPrefix
     }
-
     process {
-        $properties = Get-Content -Raw -Path $JsonFilePath `
-        | ConvertFrom-Json `
-        | Select-Object -ExpandProperty inputs `
-        | Select-Object -Property name,required,type,defaultValue,options
+            Set-ActionVariable -Name $BuildToolEnvironmentUrl -Value $EnvironmentUrl
+            Set-ActionVariable -Name $BuildToolEnvironmentId -Value $EnvironmentId
+            Set-ActionVariable -Name $BuildToolOrganizationId -Value $OrganizationId
+            Set-ActionVariable -Name $BuildToolOrgUniqueName -Value $OrgUniqueName
     }
-
     end {
-        return $properties
+        Write-Information -MessageData $decorator
+        Write-Information -MessageData "Pipeline variables"
+        Write-Information -MessageData $decorator
+        Write-Information -MessageData "$prefix $BuildToolEnvironmentUrl : $EnvironmentUrl"
+        Write-Information -MessageData "$prefix $BuildToolEnvironmentId  : $EnvironmentId"
+        Write-Information -MessageData "$prefix $BuildToolOrganizationId : $OrganizationId"
+        Write-Information -MessageData "$prefix $BuildToolOrgUniqueName  : $OrgUniqueName"
     }
 }
 
 # SIG # Begin signature block
-# MIInnAYJKoZIhvcNAQcCoIInjTCCJ4kCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# MIInnwYJKoZIhvcNAQcCoIInkDCCJ4wCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAHKmvHmNJcllqT
-# 3XTuD4/YivKUiFdNROcwKr1lQ31lwaCCDYEwggX/MIID56ADAgECAhMzAAACUosz
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAA3B+odZid6win
+# UIYcuhtUXAiUxRvkAsQ8ONw21/UWVaCCDYEwggX/MIID56ADAgECAhMzAAACUosz
 # qviV8znbAAAAAAJSMA0GCSqGSIb3DQEBCwUAMH4xCzAJBgNVBAYTAlVTMRMwEQYD
 # VQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNy
 # b3NvZnQgQ29ycG9yYXRpb24xKDAmBgNVBAMTH01pY3Jvc29mdCBDb2RlIFNpZ25p
@@ -171,66 +171,66 @@ function Get-TaskInputProperties {
 # xw4o7t5lL+yX9qFcltgA1qFGvVnzl6UJS0gQmYAf0AApxbGbpT9Fdx41xtKiop96
 # eiL6SJUfq/tHI4D1nvi/a7dLl+LrdXga7Oo3mXkYS//WsyNodeav+vyL6wuA6mk7
 # r/ww7QRMjt/fdW1jkT3RnVZOT7+AVyKheBEyIXrvQQqxP/uozKRdwaGIm1dxVk5I
-# RcBCyZt2WwqASGv9eZ/BvW1taslScxMNelDNMYIZcTCCGW0CAQEwgZUwfjELMAkG
+# RcBCyZt2WwqASGv9eZ/BvW1taslScxMNelDNMYIZdDCCGXACAQEwgZUwfjELMAkG
 # A1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1JlZG1vbmQx
 # HjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3JhdGlvbjEoMCYGA1UEAxMfTWljcm9z
 # b2Z0IENvZGUgU2lnbmluZyBQQ0EgMjAxMQITMwAAAlKLM6r4lfM52wAAAAACUjAN
 # BglghkgBZQMEAgEFAKCBoDAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgor
-# BgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgQGsmiF45
-# Vc+xZjoeN/kV4ycbPU5SR4lS22fytxybtUEwNAYKKwYBBAGCNwIBDDEmMCSgEoAQ
+# BgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgG2GsiM/p
+# 0UByjASuI19QPX/rFpbAVwLVsDD4zRhIWUYwNAYKKwYBBAGCNwIBDDEmMCSgEoAQ
 # AFQAZQBzAHQAUwBpAGcAbqEOgAxodHRwOi8vdGVzdCAwDQYJKoZIhvcNAQEBBQAE
-# ggEAlOcKVTUGmX6Qucg2HfcGg9Vm4fBP2aNTL/Sf2SWFmhS0AzXPMWbBkLIF+5JN
-# 0KywzhrCl5KD1qsxLZ4bKalFZOu2ZmVlDRSojvVAtFwgki4Dk6WvYgMeoi7BYFHI
-# rfRQbl0D6uY4be1zv0d4nn4szqDAGMT3bI4latrYHgSYMpv/v0Ll5BT9JHPWmchz
-# qS6WuMQZDJtqdjLOIp7kjUW5vr4xuNA7O7RpJNPwELXYL/y2WsfBncpOrA4H5pbo
-# QbpdLb7pNZRoet82vvieidZGyyNncVJInSoBfXVeav8wx02/1259j462jhQdUYUL
-# k5Agadw5iVGG49riNzCZJYPhIKGCFwkwghcFBgorBgEEAYI3AwMBMYIW9TCCFvEG
-# CSqGSIb3DQEHAqCCFuIwghbeAgEDMQ8wDQYJYIZIAWUDBAIBBQAwggFVBgsqhkiG
+# ggEAX0yDDiENU3KtoOFlGemrd9jzXH10c8C8N3R+MeOZTqU1aDI2xWS52PGxijs5
+# wg3p6TrIqM45NhJ/eEkcjAKmU3afWZ4IWkEDLGi5l/HUNPIOysNkwUq1xinRgWBr
+# bWX7FEAOL6dsEsCTWgGJlV95zsSL5SekZFstJGUxbjVsD3mXqhWcUU5aG0Z+8YI6
+# IQXnpYXjQjmIxp+/azf8qUAj/Rj1otqjv8nsAuPsGoJe1DYXZRMECkR5vwfMupQf
+# VWXv3rrJussUdAx3JdOPsZSsp8RfQkNx2egckE9WNTlp6tSg/Ygw/khuKwmH1NgY
+# l7JJMkbGfZ2WV+ewMu44Y29Sb6GCFwwwghcIBgorBgEEAYI3AwMBMYIW+DCCFvQG
+# CSqGSIb3DQEHAqCCFuUwghbhAgEDMQ8wDQYJYIZIAWUDBAIBBQAwggFVBgsqhkiG
 # 9w0BCRABBKCCAUQEggFAMIIBPAIBAQYKKwYBBAGEWQoDATAxMA0GCWCGSAFlAwQC
-# AQUABCCQExiBRLXR/OKC0IqE5BQZPOQ07zzLBWTt1U9kFU3PWwIGYrHEVDtvGBMy
-# MDIyMDcwNzIxNDIyMy4wNjJaMASAAgH0oIHUpIHRMIHOMQswCQYDVQQGEwJVUzET
+# AQUABCCPBI+PPVKaRgW42YiKJxbvZtWr6xrmt+HhsOqRdOYQ3gIGYrHNUbPAGBMy
+# MDIyMDcwNzIxNDIyMy40ODdaMASAAgH0oIHUpIHRMIHOMQswCQYDVQQGEwJVUzET
 # MBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMV
 # TWljcm9zb2Z0IENvcnBvcmF0aW9uMSkwJwYDVQQLEyBNaWNyb3NvZnQgT3BlcmF0
-# aW9ucyBQdWVydG8gUmljbzEmMCQGA1UECxMdVGhhbGVzIFRTUyBFU046RjdBNi1F
-# MjUxLTE1MEExJTAjBgNVBAMTHE1pY3Jvc29mdCBUaW1lLVN0YW1wIFNlcnZpY2Wg
-# ghFcMIIHEDCCBPigAwIBAgITMwAAAaUA3gjEQAdxTgABAAABpTANBgkqhkiG9w0B
+# aW9ucyBQdWVydG8gUmljbzEmMCQGA1UECxMdVGhhbGVzIFRTUyBFU046NjBCQy1F
+# MzgzLTI2MzUxJTAjBgNVBAMTHE1pY3Jvc29mdCBUaW1lLVN0YW1wIFNlcnZpY2Wg
+# ghFfMIIHEDCCBPigAwIBAgITMwAAAaZZRYM5TZ7rSwABAAABpjANBgkqhkiG9w0B
 # AQsFADB8MQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UE
 # BxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMSYwJAYD
 # VQQDEx1NaWNyb3NvZnQgVGltZS1TdGFtcCBQQ0EgMjAxMDAeFw0yMjAzMDIxODUx
-# MTlaFw0yMzA1MTExODUxMTlaMIHOMQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2Fz
+# MjFaFw0yMzA1MTExODUxMjFaMIHOMQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2Fz
 # aGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0IENv
 # cnBvcmF0aW9uMSkwJwYDVQQLEyBNaWNyb3NvZnQgT3BlcmF0aW9ucyBQdWVydG8g
-# UmljbzEmMCQGA1UECxMdVGhhbGVzIFRTUyBFU046RjdBNi1FMjUxLTE1MEExJTAj
+# UmljbzEmMCQGA1UECxMdVGhhbGVzIFRTUyBFU046NjBCQy1FMzgzLTI2MzUxJTAj
 # BgNVBAMTHE1pY3Jvc29mdCBUaW1lLVN0YW1wIFNlcnZpY2UwggIiMA0GCSqGSIb3
-# DQEBAQUAA4ICDwAwggIKAoICAQC6sYboIGpIvMLqDjDHe67BEJ5gIbVfIlNWNIrb
-# B6t9E3QlyQ5r2Y2mfMrzh2BVYU8g9W+SRibcGY1s9X4JQqrMeagcT9VsdQmZ7ENb
-# YkbEVkHNdlZBE5pGPMeOjIB7BsgJoTz6bIEZ5JRmoux6kBQd9cf0I5Me62wJa+j2
-# 5QeLTpmkdZysZeFSILLQ8H53imqBBMOIjf8U3c7WY8MhomOYTaem3nrZHIs4CRTt
-# /8kR2IdILZPm0RIa5iIG2q664G8+zLJwO7ZSrxnDvYh3OvtrMpqwFctws0OCDDTx
-# XE08fME2fpKb+pRbNXhvMZX7LtjQ1irIazJSh9iaWM1gFtXwjg+Yq17BOCzr4sWU
-# L253kBOvohnyEMGm4/n0XaLgFNgIhPomjbCA2qXSmm/Fi8c+lT0WxC/jOjBZHLKI
-# rihx6LIQqeyYZmfYjNMqxMdl3mzoWv10N+NirERrNodNoKV+sAcsk/Hg9zCVSMUk
-# ZuDCyIpb1nKXfTd66KGsGy1OoHZO4KClkuvfsNo7aLlwhGLeiD32avJXYtC/wsGG
-# 7b+5mx5iGfTnNCRCXOm/YHFQ36D4npjCnM9eQS3qcse56UNjIgyiLHDqioV7mSPj
-# 2XqzTh4Yv77MtvxY/ZQepCazGEn1dBdn67wUgVzAe8Y7/KYKl+UF1HvJ08W+FHyd
-# HAwLwQIDAQABo4IBNjCCATIwHQYDVR0OBBYEFF+mjwMAl66urXDu+9xZF0toqRrf
+# DQEBAQUAA4ICDwAwggIKAoICAQDZmL97UiPnyfzUCZ48+ybwp3Pl5tKyqHvWCg+D
+# LzGArpe3oHa0/87+bxW0IIzUO+Ou9nzcHms7ZEeuVfMtvbuTy9rH9NafrnIXtGbu
+# LUooPhrEOmUJfbYz0QGP9yEwRw3iGMr6vFp3vfuzaDy4cQ0junbV+2ArkOM3Ez90
+# hOjLweG+TYoIXbb6GVWmJNZV6Y1E33ZiqF9QAatbCW1C0p0otEHeL75d5mfY8cL/
+# XUf55WT+tpa2WGauyz7Rw+gZZnJQeT0/PQ50ptbI2mZxR6yszrJquRpZi+UhboAg
+# mTqCs9d9xSXkGhTHFwWUgkIzQAVgWxyEQhNcrBxxvNw3aJ0ZpwvBDpWHkcE1s/0A
+# s+qtK4jiG2MgvwNgYFBKbvf/RMpq07MjK9v80vBnRMm0OVu39Fq3K5igf2OtvoOk
+# 5nzkvDbVPi9YxqCjRukOUZXycGbvCf0PXZeDschyrsu/PsJuh7Be7gIs6bFoet1F
+# GqCvzhkIgRtzSfpHn+XlqZ72uGSX4QJ6mEwGQ9bh4H/FX0I55dAQdmF8yvVmk6nX
+# vHfvKgsVSq+YSWL2zvl9/tpOTwoq1Cv0m6K3l/sVIVWkBIVQ2KpWrcj7bSO2diK5
+# ITM8Bb3PqdEHsjIjZqNnAWXo8fInAznFIncMpg1GKhjxOzAPL7Slt33nkkmCbAhJ
+# LlDv7wIDAQABo4IBNjCCATIwHQYDVR0OBBYEFDpUITv8xpaivfVJDS/xrvwK8jfY
 # MB8GA1UdIwQYMBaAFJ+nFV0AXmJdg/Tl0mWnG1M1GelyMF8GA1UdHwRYMFYwVKBS
 # oFCGTmh0dHA6Ly93d3cubWljcm9zb2Z0LmNvbS9wa2lvcHMvY3JsL01pY3Jvc29m
 # dCUyMFRpbWUtU3RhbXAlMjBQQ0ElMjAyMDEwKDEpLmNybDBsBggrBgEFBQcBAQRg
 # MF4wXAYIKwYBBQUHMAKGUGh0dHA6Ly93d3cubWljcm9zb2Z0LmNvbS9wa2lvcHMv
 # Y2VydHMvTWljcm9zb2Z0JTIwVGltZS1TdGFtcCUyMFBDQSUyMDIwMTAoMSkuY3J0
 # MAwGA1UdEwEB/wQCMAAwEwYDVR0lBAwwCgYIKwYBBQUHAwgwDQYJKoZIhvcNAQEL
-# BQADggIBAJabCxflMDCihEdqdFiZ6OBuhhhp34N6ow3Wh3Obr12LRuiph66gH/2K
-# h5JjaLUq+mRBJ5RgiWEe1t7ifuW6b49N8Bahnn70LCiEdvquk686M7z+DbKHVk0+
-# UlafwukxAxriwvZjkCgOLci+NB01u7cW9HAHX4J8hxaCPwbGaPxWl3s0PITuMVI4
-# Q6cjTXielmL1+TQvh7/Z5k8s46shIPy9nFwDpsRFr3zwENZX8b67VMBu+YxnlGns
-# JIcLc2pwpz95emI8CRSgep+/017a34pNcWNZIHr9ScEOWlHT8cEnQ5hhOF0zdrOq
-# TzovCDtffTn+gBL4eNXg8Uc/tdVVHKbhp+7SVHkk1Eh7L80PBAjo+cO+zL+efxfI
-# VrtO3oJxvEq1o+fkxcTTwqcfwBTb88/qHU0U2XeC1rqJnDB1JixYlBjgHXrRekqH
-# xxuRHBZ9A0w9WqQWcwj/MbBkHGYMFaqO6L9t/7iCZTAiwMk2GVfSEwj9PXIlCWyg
-# VQkDaxhJ0P1yxTvZsrMsg0a7x4VObhj3V8+Cbdv2TeyUGEblTUrgqTcKCtCa9bOn
-# Ig7xxHi8onM8aCHvRh90sn2x8er/6YSPohNw1qNUwiu+RC+qbepOYt+v5J9rklV3
-# Ux+OGVZId/4oVd7xMLO/Lhpb7IjHKygYKaNx3XIwx4h6FrFH+BiMMIIHcTCCBVmg
+# BQADggIBAIDA8Vg06Rqi5xaD4Zv4g38BxhfMa9jW6yZfHoBINk4UybE39MARPmUL
+# J2H60ZlwW3urAly1Te9Kj7iPjhGzeTDmouwbntf+I+VU5Fqrh+RmXlWrdjfnQ+5U
+# lFqdHVPI/rgYQS+RhUpqA1VZvs1thkdo7jyNb9ueACU29peOfGp5ZCYxr5mJ9gbU
+# Utd4f8A0e4a0GiOwYHch1gFefhxI+VIayK677cCYor0mlBAN6iumSv62SEL/7jkQ
+# 5DjcPtqRxyBNUl5v1iJYa1UthyKIH69yY6r2YqJ+iyUg++NY/MVQy4gpcAG7KR6F
+# RY8bcQXDI6j8emlgiUvL40qE54ZFeDzueZqrDO0PF0ERkIQO8OMzUDibvZA+MRXW
+# KT1Jizf3WiHBBJaHwYxs/rBHdQeMqqiJN7thuFcoE1xZrYS/HIUqO6/hiL06lioU
+# gP7Gp0uDd4woAgntxU0ibKeIOZ8Gry71gLc3DiL0kaKxpgHjdJtsIMwSveU/6oKx
+# hg10qLNSTQ1kVQZz9KrMNUKKuRtA/Icb0D7N1+Nygb9RiZdMKOa3AvvTjFsSZQet
+# 4LU6ELANQhK2KGCzGbVMyS++I8GZP4K6RxEISIQd7J3gvMMxiibn7e2Dvx1gqbsH
+# QoSI8p05wYfshRjHYN8EayGznMP4ipl2aKTE0DDnJiHiMCQHswOwMIIHcTCCBVmg
 # AwIBAgITMwAAABXF52ueAptJmQAAAAAAFTANBgkqhkiG9w0BAQsFADCBiDELMAkG
 # A1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1JlZG1vbmQx
 # HjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3JhdGlvbjEyMDAGA1UEAxMpTWljcm9z
@@ -270,42 +270,42 @@ function Get-TaskInputProperties {
 # qfG3rsjoiV5PndLQTHa1V1QJsWkBRH58oWFsc/4Ku+xBZj1p/cvBQUl+fpO+y/g7
 # 5LcVv7TOPqUxUYS8vwLBgqJ7Fx0ViY1w/ue10CgaiQuPNtq6TPmb/wrpNPgkNWcr
 # 4A245oyZ1uEi6vAnQj0llOZ0dFtq0Z4+7X6gMTN9vMvpe784cETRkPHIqzqKOghi
-# f9lwY1NNje6CbaUFEMFxBmoQtB1VM1izoXBm8qGCAs8wggI4AgEBMIH8oYHUpIHR
+# f9lwY1NNje6CbaUFEMFxBmoQtB1VM1izoXBm8qGCAtIwggI7AgEBMIH8oYHUpIHR
 # MIHOMQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMH
 # UmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMSkwJwYDVQQL
 # EyBNaWNyb3NvZnQgT3BlcmF0aW9ucyBQdWVydG8gUmljbzEmMCQGA1UECxMdVGhh
-# bGVzIFRTUyBFU046RjdBNi1FMjUxLTE1MEExJTAjBgNVBAMTHE1pY3Jvc29mdCBU
-# aW1lLVN0YW1wIFNlcnZpY2WiIwoBATAHBgUrDgMCGgMVALPJcNtFs5sQyojdS4Ye
-# 5mVl7rSooIGDMIGApH4wfDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0
+# bGVzIFRTUyBFU046NjBCQy1FMzgzLTI2MzUxJTAjBgNVBAMTHE1pY3Jvc29mdCBU
+# aW1lLVN0YW1wIFNlcnZpY2WiIwoBATAHBgUrDgMCGgMVAGp0M62VvUwfd1Xuz2uF
+# D2qNn3ytoIGDMIGApH4wfDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0
 # b24xEDAOBgNVBAcTB1JlZG1vbmQxHjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3Jh
 # dGlvbjEmMCQGA1UEAxMdTWljcm9zb2Z0IFRpbWUtU3RhbXAgUENBIDIwMTAwDQYJ
-# KoZIhvcNAQEFBQACBQDmcVoKMCIYDzIwMjIwNzA3MTcxMTM4WhgPMjAyMjA3MDgx
-# NzExMzhaMHQwOgYKKwYBBAGEWQoEATEsMCowCgIFAOZxWgoCAQAwBwIBAAICAbQw
-# BwIBAAICEskwCgIFAOZyq4oCAQAwNgYKKwYBBAGEWQoEAjEoMCYwDAYKKwYBBAGE
-# WQoDAqAKMAgCAQACAwehIKEKMAgCAQACAwGGoDANBgkqhkiG9w0BAQUFAAOBgQBY
-# LhkTso+hAqkl3OrjpnDagq5LQRbY2NzvidUQqlwK5jgC1RPqI5aVIpQYVKdi1Z+E
-# j3BV77Juzyeld2ETy6rO6rNRxTVhV9US7LEqKsp/gEoKutJfaC8nXzwYl3h7Gs9s
-# ClN9B3uzxClu4IGeV93lqNgWnsanrsPXpb+MlR/u7jGCBA0wggQJAgEBMIGTMHwx
-# CzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRt
-# b25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xJjAkBgNVBAMTHU1p
-# Y3Jvc29mdCBUaW1lLVN0YW1wIFBDQSAyMDEwAhMzAAABpQDeCMRAB3FOAAEAAAGl
-# MA0GCWCGSAFlAwQCAQUAoIIBSjAaBgkqhkiG9w0BCQMxDQYLKoZIhvcNAQkQAQQw
-# LwYJKoZIhvcNAQkEMSIEICOk2F9yyURnEfVCvwEnwiGwgegbS8+QwZHYPAJAbatY
-# MIH6BgsqhkiG9w0BCRACLzGB6jCB5zCB5DCBvQQguAo4cX5mBLGgrdgFPNyoYfui
-# R5cpNwe9L3zBzJQS3FwwgZgwgYCkfjB8MQswCQYDVQQGEwJVUzETMBEGA1UECBMK
-# V2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0
-# IENvcnBvcmF0aW9uMSYwJAYDVQQDEx1NaWNyb3NvZnQgVGltZS1TdGFtcCBQQ0Eg
-# MjAxMAITMwAAAaUA3gjEQAdxTgABAAABpTAiBCCCr/IzNVRqu5xHfcY6PLlktZTQ
-# 7svF7dzboygBfIMXnjANBgkqhkiG9w0BAQsFAASCAgCmMEvk8R3mOinJWFeTecSv
-# D344Snj0HI28ea0ImpPX4NkzEe/9EInhu5nC/yep8LyVGQB8ksCL4S9IBXZiCQ1b
-# vmxdo7kWQA4dGSc/ggcXB3yPKzHmvsVsxiZgROJh6K//yACSymGwPY+BWPwzfJcD
-# VvlTQ3B7KeKT0wRSu4Y7NnOHuTK+jqCfHbhghluWoHpwMEUpagXDIikPFoMj11y0
-# r5aabCjn3e3DDDClYjiP+w6LQb19v8/ihrV/kL/CEJkFr4n6YU+GvNaZngU6wCzC
-# NzzLb5Dx/qlQ6sMSLELW+lGXGK8eR0gSp7hS2FK/02nnqpCDCwZxIpajBI6RAow4
-# 7M5va091F6kBcVKDZm37XkCOL5FJEdm+27D6epbg77Z/6DxpIvWbfFfGkJ0JA3Dh
-# ZuNcNNhKjGOkE+1rLS0XEPufbFm8RpjOjKdmCVPER3Ij0bDFwFAmjcvm0giCTwHw
-# S6GeN4SXIC+I6N4wKC/RUZdIQuxF5zWli5VKbzmgA5smGOhdTI27qltcXuDRXcaU
-# emCLM/qXa6MwG2SfYJ9/oG737eESyXJFCPEY9uJ/d1tpksGhoHiJ2PmgYoJVRLVI
-# nO4kvXhMaP2p8Xl51mJ2gLPPQVu+yB9ZFbMNr7/lrwvO7hHH/yECzjOwqIbFRbG5
-# eBmo4jd7CcnWD9tpFbk9HQ==
+# KoZIhvcNAQEFBQACBQDmcWNJMCIYDzIwMjIwNzA3MTc1MTA1WhgPMjAyMjA3MDgx
+# NzUxMDVaMHcwPQYKKwYBBAGEWQoEATEvMC0wCgIFAOZxY0kCAQAwCgIBAAICHOwC
+# Af8wBwIBAAICETgwCgIFAOZytMkCAQAwNgYKKwYBBAGEWQoEAjEoMCYwDAYKKwYB
+# BAGEWQoDAqAKMAgCAQACAwehIKEKMAgCAQACAwGGoDANBgkqhkiG9w0BAQUFAAOB
+# gQDIp9x1P/kEhUV5FyYFCfsKMpkGUo50eZ6YDrtT0TIUlW2ltxdoaZ8a/CZnJf+f
+# b1UM+jM2755R9b+JhTjwX/AUrntmtQ+01YVQJ72Lx3UrahAqWaG9glNGSU7j5rAJ
+# 9KjcVr/Tnet86He4OQ09X3gh5N4iC9RD54XME4cL5+hMOjGCBA0wggQJAgEBMIGT
+# MHwxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdS
+# ZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xJjAkBgNVBAMT
+# HU1pY3Jvc29mdCBUaW1lLVN0YW1wIFBDQSAyMDEwAhMzAAABpllFgzlNnutLAAEA
+# AAGmMA0GCWCGSAFlAwQCAQUAoIIBSjAaBgkqhkiG9w0BCQMxDQYLKoZIhvcNAQkQ
+# AQQwLwYJKoZIhvcNAQkEMSIEIF3pTntwqTie9t53zQptNkPOS/lo2sImpYmgtEOo
+# eDEIMIH6BgsqhkiG9w0BCRACLzGB6jCB5zCB5DCBvQQggwsZi8M/dH1r4TCmyUwE
+# Girdw6F3ogIX6fEw/bYEqw0wgZgwgYCkfjB8MQswCQYDVQQGEwJVUzETMBEGA1UE
+# CBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9z
+# b2Z0IENvcnBvcmF0aW9uMSYwJAYDVQQDEx1NaWNyb3NvZnQgVGltZS1TdGFtcCBQ
+# Q0EgMjAxMAITMwAAAaZZRYM5TZ7rSwABAAABpjAiBCCTgVtbWGf2HZ88vXawU1YH
+# rK7WWy2NwBugvweE+GGwLzANBgkqhkiG9w0BAQsFAASCAgBF8dV1LX6xKmLjCNEE
+# jX8LcbJq1waZBo/afGs56AHq0OqPIE9ZNh5oPbLuwRfG2xBmv77glk4O1I7i/9XI
+# LmqrT5G/T3nVvJ3epkXoEAW5Z8rKdxJj8GfOG7TRts1FUO4ZPsDkA/6RV+7JqLL5
+# XbM/fbdPTDyBtCuMrU4au4ekhytOWHD0qlXdy4a1xD0ry+XeIT7adOe5g5fF8XXy
+# 4f9gJ09zQG1wQS8QOoDQubtjl6pHn3j5f18XNsNjjSR6Uq51OPYTJEmmgYm9dk/l
+# thnZTGZu7M4Kkr0QF+qz49MfTD3RdTMa0dTaTq7XpVR+A+FWMYhZzWBMq8OjB1Ki
+# 144hyfNTRkTdS12SgM4pbJqYC2eqAZGUteo1mBn2UBiaFAeMtm+LU5Oq0el/gCsk
+# vP6d/kDNwI/VAuyWV7jUyoK90lvECtVgPYY78BpHjXE+hY8R6PUQxiLuHZVlPZ4E
+# lgKZ768ySuGYVVwD5Ef+3lxQlSMbUtweiCbyVn8aXgSsEqNHQ5y1P1i88QKx3Idi
+# qgQeeO9ishCq9dw1EypnRBx6EhxljeROnwB4yhn9SBoMN5KwoiAFpmfOr6iIjykX
+# cQacm9TwgzE6fY1ZwfgFum6nojFA87voAgclKM13IXj8GZKq2qcwG+3HmingZ8Dn
+# E7bFBbzf6qtc1tVdOd3x9PYxqA==
 # SIG # End signature block

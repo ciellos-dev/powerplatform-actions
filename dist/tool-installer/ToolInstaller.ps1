@@ -153,7 +153,7 @@ try {
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
     
     Write-Verbose "PS-Version: $($PSVersionTable.PSVersion) - $($PSVersionTable.PSEdition)"
-    ("..\ps_modules\GitHubActions", "..\ps_modules\VstsTaskSdk", "SharedFunctions.psm1") `
+    ("..\ps_modules\VstsTaskSdk", "..\ps_modules\SharedFunctions.psm1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module -Force
 
     #$defaultVersion = Get-VSTSInput -Name "DefaultVersion" -AsBool

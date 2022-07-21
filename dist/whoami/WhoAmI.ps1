@@ -42,14 +42,14 @@ try {
         ## Make sure the GH Actions module is installed from the Gallery
         Remove-Module GitHubActions -Force -ErrorAction SilentlyContinue
     }
-    Write-ActionInfo "Importing base modules...."
-    ("..\ps_modules\GitHubActions", "..\ps_modules\VstsTaskSdk", "SharedFunctions.psm1", "Get-ParameterValue.ps1") `
+    Write-VstsTaskVerbose "Importing base modules...."
+    ("..\ps_modules\VstsTaskSdk", "..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
     $redirector = Get-BindingRedirector
-    Write-ActionInfo "Importing Microsoft.Xrm.WebApi.PowerShell...."
+    Write-VstsTaskVerbose "Importing Microsoft.Xrm.WebApi.PowerShell...."
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell"
 
-    Write-ActionInfo "Gathering Credentials...."
+    Write-VstsTaskVerbose "Gathering Credentials...."
     # Get input parameters and credentials
     $authInfo = '' 
 
@@ -72,9 +72,9 @@ try {
             AuthType        = 'ClientSecret'
         }
     }
-    Write-ActionInfo "AuthLog AuthInfo...."
+    Write-VstsTaskVerbose "AuthLog AuthInfo...."
     Write-AuthLog -AuthInfo $authInfo
-    Write-ActionInfo "Invoke-WhoAmI...."
+    Write-VstsTaskVerbose "Invoke-WhoAmI...."
     Invoke-WhoAmI $authInfo
 
 } 
