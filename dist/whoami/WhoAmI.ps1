@@ -69,7 +69,7 @@ try {
             AuthType        = 'ClientSecret'
         }
     }
-
+    Write-ActionInfo "AuthLog AuthInfo...."
     Write-AuthLog -AuthInfo $authInfo
     Write-ActionInfo "Invoke-WhoAmI...."
     Invoke-WhoAmI $authInfo
