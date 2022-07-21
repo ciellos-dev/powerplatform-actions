@@ -47,4 +47,4 @@ runs:
                                                                -ClientSecret ${{ inputs.client-secret }} `
                                                                -TenantId ${{ inputs.tenant-id }} `
                                                                -Cloud ${{ inputs.cloud }} 
-      shell: pwsh
+      shell: powershell
