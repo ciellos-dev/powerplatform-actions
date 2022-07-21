@@ -42,9 +42,10 @@ try {
         ## Make sure the GH Actions module is installed from the Gallery
         Remove-Module GitHubActions -Force -ErrorAction SilentlyContinue
     }
-    Write-VstsTaskVerbose "Importing base modules...."
+    
     ("..\ps_modules\VstsTaskSdk", "..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
+    Write-VstsTaskVerbose "Imported base modules"
     $redirector = Get-BindingRedirector
     Write-VstsTaskVerbose "Importing Microsoft.Xrm.WebApi.PowerShell...."
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell"
