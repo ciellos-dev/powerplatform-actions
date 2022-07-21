@@ -40,7 +40,7 @@ try {
         Remove-Module GitHubActions -Force -ErrorAction SilentlyContinue
     }
 
-    ("SharedFunctions.psm1", "Get-ParameterValue.ps1") `
+    ("..\ps_modules\GitHubActions", "..\ps_modules\VstsTaskSdk", "SharedFunctions.psm1", "Get-ParameterValue.ps1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
     $redirector = Get-BindingRedirector
 
