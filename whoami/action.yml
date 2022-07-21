@@ -32,10 +32,15 @@ inputs:
     required: false
     default: 'Public'
 
+outputs:
+  environment-id:
+    value: ${{ steps.whoami.outputs.envId }}
+
 runs:
   using: "composite"
   steps:
     - run: |
+      
         $output = ${{ github.action_path }}\..\dist\whoami\WhoAmI.ps1 -EnvironmentUrl ${{ inputs.environment-url }} `
                                                                -Username ${{ inputs.user-name }} `
                                                                -PasswordSecret ${{ inputs.password-secret }} `
