@@ -43,7 +43,7 @@ function Get-ActionVariable {
         [Parameter(Position=0, Mandatory)]
         [string]$Name
     )
-
+    Write-Host $Name
     return  (get-item env:$Name).Value   #[System.Environment]::GetEnvironmentVariable($Name)
 }
 <#
