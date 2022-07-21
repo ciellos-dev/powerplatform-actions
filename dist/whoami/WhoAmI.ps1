@@ -59,6 +59,7 @@ try {
             TenantId        = $null
             AuthType        = 'OAuth'
         }
+    }
     #} elseif ($selectedAuthName -eq "PowerPlatformSPN") {
     else{
         $authInfo = @{
