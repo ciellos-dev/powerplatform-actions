@@ -1,16 +1,20 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 
 [CmdletBinding()]
-param()
+param(
+    [parameter (Mandatory = $true)][string]$EnvironmentUrl,
+    [string]$Username,
+    [string]$PasswordSecret,
+    [string]$AppId,
+    [string]$ClientSecret,
+    [parameter (Mandatory = $true)][string]$TenantId,
+    [parameter (Mandatory = $true)][string]$SolutionName,
+    [parameter (Mandatory = $true)][string]$NewSolutionVersion
+)
 function Invoke-SetSolutionVersion {
     [CmdletBinding()]
     param (
-        [parameter (Mandatory = $true)][string]$EnvironmentUrl,
-        [string]$Username,
-        [string]$PasswordSecret,
-        [string]$AppId,
-        [string]$ClientSecret,
-        [parameter (Mandatory = $true)][string]$TenantId,
+        [parameter (Mandatory = $true)][string]$authInfo,
         [parameter (Mandatory = $true)][string]$SolutionName,
         [parameter (Mandatory = $true)][string]$NewSolutionVersion
     )
@@ -29,7 +33,6 @@ function Invoke-SetSolutionVersion {
     }
 }
 
-Trace-VstsEnteringInvocation $MyInvocation
 try {
     # Load shared functions and other dependencies
     ("..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1") `
@@ -76,7 +79,6 @@ finally {
     if ($null -ne $redirector) {
         $redirector.Dispose()
     }
-    Trace-VstsLeavingInvocation $MyInvocation
 }
 
 # SIG # Begin signature block

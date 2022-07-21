@@ -48,5 +48,7 @@ runs:
                                                                                       -AppId ${{ inputs.app-id }} `
                                                                                       -ClientSecret ${{ inputs.client-secret }} `
                                                                                       -TenantId ${{ inputs.tenant-id }} `
+                                                                                      -SolutionName ${{ inputs.solution-name }} `
+                                                                                      -SolutionVersionNumber ${{ inputs.solution-version-number }}
 
       shell: powershell
