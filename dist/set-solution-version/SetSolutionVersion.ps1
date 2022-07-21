@@ -66,9 +66,8 @@ try {
     Write-VstsTaskVerbose "AuthLog AuthInfo...."
     Write-AuthLog -AuthInfo $authInfo
 
-    $taskJson = Join-Path -Path $PSScriptRoot "task.json"
-    $solutionName = Get-VstsInputWithDefault -Name "SolutionName" -taskJsonFile $taskJson
-    $solutionVersionNumber = Get-VstsInputWithDefault -Name "SolutionVersionNumber" -taskJsonFile $taskJson
+    $solutionName = $SolutionName
+    $solutionVersionNumber = $NewSolutionVersion
 
     Write-AuthLog -AuthInfo $authInfo
     $result = Invoke-SetSolutionVersion $authInfo `
