@@ -5,7 +5,12 @@ param()
 function Invoke-SetSolutionVersion {
     [CmdletBinding()]
     param (
-        [parameter (Mandatory = $true)][Hashtable]$authInfo,
+        [parameter (Mandatory = $true)][string]$EnvironmentUrl,
+        [string]$Username,
+        [string]$PasswordSecret,
+        [string]$AppId,
+        [string]$ClientSecret,
+        [parameter (Mandatory = $true)][string]$TenantId,
         [parameter (Mandatory = $true)][string]$SolutionName,
         [parameter (Mandatory = $true)][string]$NewSolutionVersion
     )
@@ -32,8 +37,31 @@ try {
     $redirector = Get-BindingRedirector
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell"
 
+    Write-VstsTaskVerbose "Gathering Credentials...."
     # Get input parameters and credentials
-    $authInfo = Get-AuthInfoFromActiveServiceConnection
+    $authInfo = '' 
+
+    $PSCredential = New-Object System.Management.Automation.PSCredential ($Username, (ConvertTo-SecureString $PasswordSecret -AsPlainText -Force))
+    #if ($selectedAuthName -eq "PowerPlatformEnvironment") {
+    if(-not ($ClientSecret -eq "")){
+         $authInfo = @{
+            EnvironmentUrl  = $EnvironmentUrl
+            Credential      = $PSCredential
+            TenantId        = $null
+            AuthType        = 'OAuth'
+        }
+    }
+    #} elseif ($selectedAuthName -eq "PowerPlatformSPN") {
+    else{
+        $authInfo = @{
+            EnvironmentUrl  = $EnvironmentUrl
+            Credential      = $PSCredential
+            TenantId        = $TenantId
+            AuthType        = 'ClientSecret'
+        }
+    }
+    Write-VstsTaskVerbose "AuthLog AuthInfo...."
+    Write-AuthLog -AuthInfo $authInfo
 
     $taskJson = Join-Path -Path $PSScriptRoot "task.json"
     $solutionName = Get-VstsInputWithDefault -Name "SolutionName" -taskJsonFile $taskJson

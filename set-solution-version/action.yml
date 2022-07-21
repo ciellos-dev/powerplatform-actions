@@ -25,29 +25,28 @@ inputs:
 
   tenant-id:
     description: 'Tenant id if using app-id & client secret to authenticate.'
-    required: true
-
-  cloud:
-    description: 'Cloud instance to authenticate with. Default: Public. See "pac auth create help" for valid cloud instance names'
     required: false
-    default: 'Public'
 
-outputs:
-  environment-id:
-    value: ${{ steps.whoami.outputs.envId }}
+  solution-name:
+    description: 'The name of the solution to export.'
+    required: true
+    default: '2.0.139'
+
+  solution-version-number:
+    description: 'Specify the solution version number.'
+    required: true
+    default: '3.3.0.928'
+
 
 runs:
   using: "composite"
   steps:
     - run: |
-      
-        $output = ${{ github.action_path }}\..\dist\whoami\WhoAmI.ps1 -EnvironmentUrl ${{ inputs.environment-url }} `
-                                                                      -Username ${{ inputs.user-name }} `
-                                                                      -PasswordSecret ${{ inputs.password-secret }} `
-                                                                      -AppId ${{ inputs.app-id }} `
-                                                                      -ClientSecret ${{ inputs.client-secret }} `
-                                                                      -TenantId ${{ inputs.tenant-id }} `
-                                                                      -Cloud ${{ inputs.cloud }} 
-        Set-Output "envId" $output.EnvironmentId
+        ${{ github.action_path }}\..\dist\set-solution-version\SetSolutionVersion.ps1 -EnvironmentUrl ${{ inputs.environment-url }} `
+                                                                                      -Username ${{ inputs.user-name }} `
+                                                                                      -PasswordSecret ${{ inputs.password-secret }} `
+                                                                                      -AppId ${{ inputs.app-id }} `
+                                                                                      -ClientSecret ${{ inputs.client-secret }} `
+                                                                                      -TenantId ${{ inputs.tenant-id }} `
+
       shell: powershell
-      id: whoami
