@@ -25,7 +25,7 @@ function Set-ActionVariable {
         [string]$Value,
         [switch]$SkipLocal
     )
-   Set-TaskVariable -Name $Name -Value $Value
+    "$([string]$Name)=$([string]$Value)" >> $ENV:GITHUB_ENV
     ## To take effect only in the current action/step
    # if (-not $SkipLocal) {
    #[Environment]::SetEnvironmentVariable($Name, $Value, [System.EnvironmentVariableTarget]::Machine)
@@ -44,7 +44,7 @@ function Get-ActionVariable {
         [string]$Name
     )
 
-    return  Get-TaskVariable -Name $Name   #[System.Environment]::GetEnvironmentVariable($Name)
+    return  (get-item env:$Name).Value   #[System.Environment]::GetEnvironmentVariable($Name)
 }
 <#
 .SYNOPSIS
