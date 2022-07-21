@@ -1,0 +1,23 @@
+name: test
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: script 1
+        shell: pwsh
+        run: |
+          Import-Module ${{ github.workspace }}\dist\ps_modules\VstsTaskSdk
+          Set-VstsTaskVariable -Name "TestVar" -Value "TestValue1"
+          Get-VstsTaskVariable -Name "TestVar"
+          "TestVar=TestValue1" >> $env:GITHUB_ENV
+
+      - name: Run a multi-line script
+        shell: pwsh
+        run: |
+          Import-Module ${{ github.workspace }}\dist\ps_modules\VstsTaskSdk
+          Get-VstsTaskVariable -Name "TestVar"
+          $env:TestVar
