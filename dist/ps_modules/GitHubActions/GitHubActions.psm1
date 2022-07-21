@@ -43,8 +43,14 @@ function Get-ActionVariable {
         [Parameter(Position=0, Mandatory)]
         [string]$Name
     )
-    Write-Host $Name
-    return  (get-item env:$Name).Value   #[System.Environment]::GetEnvironmentVariable($Name)
+    $inputValue = Get-ChildItem "Env:$($Name)" -ErrorAction SilentlyContinue
+    if ($Required -and (-not $inputValue)) {
+        throw "Input required and not supplied: $($Name)"
+    }
+
+    return "$($inputValue.Value)".Trim()
+  #  Write-Host "VarName is: "$Name
+ #   return  (get-item env:$Name).Value   #[System.Environment]::GetEnvironmentVariable($Name)
 }
 <#
 .SYNOPSIS
@@ -112,7 +118,7 @@ function Get-ActionInput {
     )
     
     $cleanName = ($Name -replace ' ','_').ToUpper()
-    $inputValue = Get-ChildItem "Env:$($INPUT_PREFIX)$($cleanName)" -ErrorAction SilentlyContinue
+    $inputValue = Get-ChildItem "Env:$($cleanName)" -ErrorAction SilentlyContinue
     if ($Required -and (-not $inputValue)) {
         throw "Input required and not supplied: $($Name)"
     }
