@@ -25,6 +25,7 @@ function Invoke-SetSolutionVersion {
     }
 
     process {
+        Write-Host "Start Set-SolutionVersion process...."
         $setVersionOperation = Set-SolutionVersion @Parameters -InformationAction Continue
     }
 
@@ -63,15 +64,12 @@ try {
             AuthType        = 'ClientSecret'
         }
     }
-    Write-VstsTaskVerbose "AuthLog AuthInfo...."
-    Write-AuthLog -AuthInfo $authInfo
 
     $solutionName = $SolutionName
     $solutionVersionNumber = $NewSolutionVersion
 
     Write-AuthLog -AuthInfo $authInfo
-    $result = Invoke-SetSolutionVersion $authInfo `
-        -SolutionName $solutionName -NewSolutionVersion $solutionVersionNumber
+    $result = Invoke-SetSolutionVersion $authInfo -SolutionName $solutionName -NewSolutionVersion $solutionVersionNumber
     Write-Verbose "SetSolutionVersion result: $($result.Attributes)"
 }
 finally {
