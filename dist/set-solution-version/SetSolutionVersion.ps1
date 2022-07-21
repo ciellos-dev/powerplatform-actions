@@ -21,7 +21,7 @@ function Invoke-SetSolutionVersion {
 
     begin {
         #Setup parameter hash table
-        $Parameters = . Get-ParameterValue
+        $Parameters = . Get-ParameterValue -Verbose
     }
 
     process {
