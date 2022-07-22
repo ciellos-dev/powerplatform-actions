@@ -59,8 +59,8 @@ runs:
                                                                                       -RegistrationType ${{ inputs.registration-type }} `
                                                                                       -AssemblyPath ${{ inputs.assembly-path }} `
                                                                                       -UseSplitAssembly ${{ inputs.use-split-assembly }} `
-                                                                                      -ProjectFilePath ${{ inputs.project-file-path }} `
-                                                                                      -MappingFile ${{ inputs.mapping-file }} `
-                                                                                      -SolutionName ${{ inputs.solution-name }} `
+                                                                                      -ProjectFilePath '${{ inputs.project-file-path }}' `
+                                                                                      -MappingFile '${{ inputs.mapping-file }}' `
+                                                                                      -SolutionName '${{ inputs.solution-name }}' `
                                                                                       -CrmConnectionTimeout ${{ inputs.crm-connection-timeout }} 
       shell: powershell
