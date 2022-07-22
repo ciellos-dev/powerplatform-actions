@@ -15,7 +15,7 @@ inputs:
 
   assembly-path:
     description: 'Path of assembly to be register.'
-    required: true
+    required: false
     default: ''
 
   use-split-assembly:

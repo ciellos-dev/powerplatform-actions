@@ -4,7 +4,7 @@ param(
 	[parameter (Mandatory = $true)][string]$CrmConnectionString,
 	[ValidateSet('Upsert','Reset','Delsert')]
     [parameter (Mandatory = $true)][string]$RegistrationType,
-	[parameter (Mandatory = $true)][string]$AssemblyPath,
+	[string]$AssemblyPath,
 	[bool]$UseSplitAssembly,
 	[string]$ProjectFilePath,
 	[string]$MappingFile,
@@ -15,9 +15,6 @@ param(
 $ErrorActionPreference = "Stop"
 
 Write-Verbose 'Entering PluginRegistration.ps1'
-
-#Get Parameters
-$crmConnectionTimeout = Get-VstsInput -Name crmConnectionTimeout -Require -AsInt
 
 #Print Verbose
 Write-Verbose "crmConnectionString = $CrmConnectionString"
