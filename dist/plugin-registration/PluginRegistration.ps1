@@ -27,6 +27,6 @@ Write-Verbose "solutionName = $SolutionName"
 Write-Verbose "crmConnectionTimeout = $CrmConnectionTimeout"
 
 
-& "$PSScriptRoot\..\dist\ps_modules\lib\xRMCIFramework\9.0.0\PluginRegistration.ps1" -CrmConnectionString $CrmConnectionString -RegistrationType $RegistrationType -AssemblyPath $AssemblyPath -MappingFile $MappingFile -SolutionName $SolutionName -useSplitAssembly $UseSplitAssembly -projectFilePath $ProjectFilePath -Timeout $CrmConnectionTimeout
+& "$PSScriptRoot\..\ps_modules\lib\xRMCIFramework\9.0.0\PluginRegistration.ps1" -CrmConnectionString $CrmConnectionString -RegistrationType $RegistrationType -AssemblyPath $AssemblyPath -MappingFile $MappingFile -SolutionName $SolutionName -useSplitAssembly $UseSplitAssembly -projectFilePath $ProjectFilePath -Timeout $CrmConnectionTimeout
 
 Write-Verbose 'Leaving MSCRMPluginRegistration.ps1'
