@@ -47,14 +47,6 @@ runs:
   using: "composite"
   steps:
     - run: |
-        Write-Host "registrationType = " ${{ inputs.registration-type }}
-        Write-Host "assemblyPath = " ${{ inputs.assembly-path }}
-        Write-Host "projectFilePath = " ${{ inputs.project-file-path }}
-        Write-Host "useSplitAssembly = " ${{ inputs.use-split-assembly }}
-        Write-Host "MappingFile = " ${{ inputs.mapping-file }}
-        Write-Host "solutionName = " ${{ inputs.solution-name }}
-        Write-Host "crmConnectionTimeout = " $CrmConnectionTimeout
-        Write-Host "crmConnectionString = " '${{ inputs.crm-connection-string }}'
         ${{ github.action_path }}\..\dist\plugin-registration\PluginRegistration.ps1  -CrmConnectionString '${{ inputs.crm-connection-string }}' `
                                                                                       -RegistrationType ${{ inputs.registration-type }} `
                                                                                       -AssemblyPath ${{ inputs.assembly-path }} `
