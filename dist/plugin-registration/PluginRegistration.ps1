@@ -9,7 +9,7 @@ param(
 	[string]$ProjectFilePath,
 	[string]$MappingFile,
 	[string]$SolutionName,
-	[parameter (Mandatory = $true)][int]$CrmConnectionTimeout
+	[int]$CrmConnectionTimeout
 )
 
 $ErrorActionPreference = "Stop"
