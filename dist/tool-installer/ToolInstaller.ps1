@@ -156,17 +156,6 @@ try {
     ("..\ps_modules\VstsTaskSdk", "..\ps_modules\SharedFunctions.psm1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module -Force
 
-    #$defaultVersion = Get-VSTSInput -Name "DefaultVersion" -AsBool
-    #$taskJson = Join-Path -Path $PSScriptRoot "task.json"
-    #$xrmOnlineManagementApiVersion = Get-VstsInputWithDefault -Name "XrmOnlineManagementApiVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion
-    #if ($xrmOnlineManagementApiVersion -ne '(obsolete)') {
-    #    Write-Warning "OBSOLETE: This version of the BuildTools no longer depends on the OnlineManagement module; any value will be ignored"
-    #}
-    #$powerAppsAdminVersion = Get-VstsInputWithDefault -Name "PowerAppsAdminVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
-    #$xrmToolingPackageDeploymentVersion = Get-VstsInputWithDefault -Name "XrmToolingPackageDeploymentVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
-    #$microsoftPowerAppsCheckerVersion = Get-VstsInputWithDefault -Name "MicrosoftPowerAppsCheckerVersion" -taskJsonFile $taskJson -DefaultValue:$defaultVersion -Require
-    #$crmSdkCoreToolsVersion = Get-VstsInputWithDefault -Name "CrmSdkCoreToolsVersion" -taskJsonFile $taskJson  -DefaultValue:$defaultVersion -Require
-
     $powerAppsAdminVersion = $PowerAppsAdminVersion
     $xrmToolingPackageDeploymentVersion = $XrmToolingPackageDeploymentVersion
     $microsoftPowerAppsCheckerVersion = $MicrosoftPowerAppsCheckerVersion

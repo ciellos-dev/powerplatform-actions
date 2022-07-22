@@ -42,7 +42,7 @@ try {
     $redirector = Get-BindingRedirector
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell"
 
-    Write-VstsTaskVerbose "Gathering Credentials...."
+    Write-Information "Gathering Credentials...."
     # Get input parameters and credentials
     $authInfo = '' 
 

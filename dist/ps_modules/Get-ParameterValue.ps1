@@ -8,9 +8,7 @@ function Get-ParameterValue {
         $BoundParameters = $PSBoundParameters
     )
     begin {
-        Write-Host "Start Set-SolutionVersion process...."
         $ParameterValues = @{ }
-
     }
 
     process {

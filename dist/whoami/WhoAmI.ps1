@@ -41,11 +41,11 @@ try {
     
     ("..\ps_modules\VstsTaskSdk", "..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
-    Write-VstsTaskVerbose "Imported base modules"
+    Write-Information "Imported base modules"
     $redirector = Get-BindingRedirector
-    Write-VstsTaskVerbose "Importing Microsoft.Xrm.WebApi.PowerShell...."
+    Write-Information "Importing Microsoft.Xrm.WebApi.PowerShell...."
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell"
-    Write-VstsTaskVerbose "Gathering Credentials...."
+    Write-Information "Gathering Credentials...."
     # Get input parameters and credentials
     $authInfo = '' 
 
@@ -68,9 +68,9 @@ try {
             AuthType        = 'ClientSecret'
         }
     }
-    Write-VstsTaskVerbose "AuthLog AuthInfo...."
+    Write-Information "AuthLog AuthInfo...."
     Write-AuthLog -AuthInfo $authInfo
-    Write-VstsTaskVerbose "Invoke-WhoAmI...."
+    Write-Information "Invoke-WhoAmI...."
     Invoke-WhoAmI $authInfo
 } 
 catch{
