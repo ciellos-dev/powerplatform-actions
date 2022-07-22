@@ -21,7 +21,7 @@ inputs:
   use-split-assembly:
     description: 'Set to true to split plugin assembly.'
     required: false
-    default: ''
+    default: 'false'
 
   project-file-path:
     description: 'Plugin project file path.'
