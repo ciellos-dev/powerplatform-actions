@@ -1,9 +1,9 @@
 [CmdletBinding()]
 
 param(
-	[parameter (Mandatory = $true)][string]$CrmConnectionString,
+	[string]$CrmConnectionString,
 	[ValidateSet('Upsert','Reset','Delsert')]
-    [parameter (Mandatory = $true)][string]$RegistrationType,
+    [string]$RegistrationType,
 	[string]$AssemblyPath,
 	[bool]$UseSplitAssembly,
 	[string]$ProjectFilePath,
