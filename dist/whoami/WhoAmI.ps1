@@ -1,7 +1,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 
 [CmdletBinding()]
-param([Parameter()]
+param(
+    [Parameter()]
     [string]$EnvironmentUrl,
     [string]$Username,
     [string]$PasswordSecret,

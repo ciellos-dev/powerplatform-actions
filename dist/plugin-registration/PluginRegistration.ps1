@@ -5,11 +5,11 @@ param(
 	[string]$CrmConnectionString,
     [ValidateSet('Upsert','Reset','Delsert')][string]$RegistrationType,
 	[string]$AssemblyPath,
-	[bool]$UseSplitAssembly,
+	[string]$UseSplitAssembly,
 	[string]$ProjectFilePath,
 	[string]$MappingFile,
 	[string]$SolutionName,
-	[int]$CrmConnectionTimeout
+	[string]$CrmConnectionTimeout
 )
 
 $ErrorActionPreference = "Stop"
