@@ -10,7 +10,7 @@ inputs:
   user-name:
     description: 'Power Platform user name to authenticate with, e.g. myname@my-org.onmicrosoft.com. Setting this input makes user-name and password required; specifying alternate "app-id" credential set of inputs will result in an error.'
     required: false
-
+    
   password-secret:
     description: 'Power Platform password, required if authenticating with username. Do NOT checkin password, instead create a secret and reference it here with: see: https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets#using-encrypted-secrets-in-a-workflow'
     required: false
@@ -38,46 +38,56 @@ inputs:
   managed:
     description: ''
     required: true
-
+    default: 'false'
   export-autonumbering-settings:
     description: ''
     required: false
+    default: 'false'
 
   export-calendar-settings:
     description: ''
     required: false
+    default: 'false'
 
   export-customization-settings:
     description: ''
     required: false
+    default: 'false'
 
   export-emailtracking-settings:
     description: ''
     required: false
+    default: 'false'
 
   export-general-settings:
     description: ''
     required: false
+    default: 'false'
 
   export-marketing-settings:
     description: ''
     required: false
+    default: 'false'
 
   export-isv-config:
     description: ''
     required: false
+    default: 'false'
 
   export-outlook-settings:
     description: ''
     required: false
+    default: 'false'
 
   export-relationship-roles:
     description: ''
     required: false
+    default: 'false'
 
   export-sales:
     description: ''
     required: false
+    default: 'false'
 
   asyncoperation:
     description: ''
