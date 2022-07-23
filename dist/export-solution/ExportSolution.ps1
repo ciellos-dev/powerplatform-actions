@@ -19,8 +19,7 @@ param(
     [parameter (Mandatory = $false)][bool]$ExportOutlookSynchronizationSettings = $false,
     [parameter (Mandatory = $false)][bool]$ExportRelationshipRoles = $false,
     [parameter (Mandatory = $false)][bool]$ExportSales = $false,
-    [parameter (Mandatory = $true)][bool]$AsyncOperation = $true,
-    [parameter (Mandatory = $true)][Timespan]$MaxAsyncWaitTime = (New-TimeSpan -Hours 1)
+    [parameter (Mandatory = $true)][bool]$AsyncOperation = $true
 
 )
 
