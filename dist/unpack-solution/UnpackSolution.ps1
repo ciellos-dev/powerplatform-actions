@@ -5,7 +5,6 @@ param(
         [parameter(Mandatory = $true)] $SolutionInputFile,
         [parameter(Mandatory = $true)] $SolutionTargetFolder,
         [parameter(Mandatory = $true)][ValidateSet("Unmanaged", "Managed", "Both")] $SolutionType
-
 )
 
 function Invoke-ExtractSolution {
@@ -41,25 +40,22 @@ try {
 
     # Get input parameters
 
-    $solutionInputFile = Get-VstsInputWithDefault -Name "SolutionInputFile" -taskJsonFile $taskJson
-    $solutionTargetFolder = Get-VstsInputWithDefault -Name "SolutionTargetFolder" -taskJsonFile $taskJson
-    $solutionType = Get-VstsInputWithDefault -Name "SolutionType" -taskJsonFile $taskJson
-    $overwriteFiles = Get-VstsInputWithDefault -Name "OverwriteFiles" -taskJsonFile $taskJson -AsBool
+    $overwriteFiles = $True
 
-    if ((Test-Path $solutionTargetFolder) -and (Get-ChildItem $solutionTargetFolder -Force | Select-Object -First 1 | Measure-Object).Count -ne 0) {
+    if ((Test-Path $SolutionTargetFolder) -and (Get-ChildItem $SolutionTargetFolder -Force | Select-Object -First 1 | Measure-Object).Count -ne 0) {
         if (!$overwriteFiles) {
             $errorMessage = "Destination '$($solutionTargetFolder)' already exists and is not an empty directory.  Use the Overwrite Files flag to overwrite the existing directory."
             Write-Error $errorMessage
         }
         else {
-            Write-Host "Overwriting files in destination '$($solutionTargetFolder)' as Overwrite Files flag is true."
+            Write-Host "Overwriting files in destination '$($SolutionTargetFolder)' as Overwrite Files flag is true."
         }
     }
     else {
-        New-Item $solutionTargetFolder -ItemType Directory -Force | Out-Null
+        New-Item $SolutionTargetFolder -ItemType Directory -Force | Out-Null
     }
 
-    Invoke-ExtractSolution -action "Extract" -zipfile $solutionInputFile -folder $solutionTargetFolder -packagetype $solutionType
+    Invoke-ExtractSolution -action "Extract" -zipfile $SolutionInputFile -folder $SolutionTargetFolder -packagetype $SolutionType
 
 } finally {
 }

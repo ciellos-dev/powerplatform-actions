@@ -21,9 +21,8 @@ runs:
   steps:
     - run: |
       
-        $output = ${{ github.action_path }}\..\dist\unpack_solution\UnpackSolution.ps1 `
-                                                                      -SolutionInputFile '${{ inputs.solution-input-file }}' `
-                                                                      -SolutionTargetFolder '${{ inputs.solution-target-folder }}' `
-                                                                      -SolutionType '${{ inputs.solution-type }}'
+        $output = ${{ github.action_path }}\..\dist\unpack_solution\UnpackSolution.ps1 -SolutionInputFile '${{ inputs.solution-input-file }}' `
+                                                                                        -SolutionTargetFolder '${{ inputs.solution-target-folder }}' `
+                                                                                        -SolutionType '${{ inputs.solution-type }}'
 
       shell: powershell
