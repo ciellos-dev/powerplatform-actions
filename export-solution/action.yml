@@ -94,17 +94,17 @@ runs:
                                             -ClientSecret '${{ inputs.client-secret }}' `
                                             -SolutionName '${{ inputs.solution-name }}' `
                                             -SolutionOutputFile '${{ inputs.solution-output-file }}' `
-                                            -Managed (If ('${{ inputs.managed }}' -eq 'true') {$True} Else {$False})  `
-                                            -$ExportAutoNumberingSettings (If ('${{ inputs.export-autonumbering-settings }}' -eq 'true') {$True} Else {$False}) `
-                                            -$ExportCalendarSettings (If ('${{ inputs.export-calendar-settings }}' -eq 'true') {$True} Else {$False})  `
-                                            -$ExportCustomizationSettings (If ('${{ inputs.export-customization-settings }}' -eq 'true') {$True} Else {$False}) `
-                                            -$ExportEmailTrackingSettings (If ('${{ inputs.export-emailtracking-settings }}' -eq 'true') {$True} Else {$False}) `
-                                            -$ExportGeneralSettings (If ('${{ inputs.export-general-settings }}' -eq 'true') {$True} Else {$False}) `
-                                            -$ExportIsvConfig (If ('${{ inputs.export-isv-config }}' -eq 'true') {$True} Else {$False}) `
-                                            -$ExportMarketingSettings (If ('${{ inputs.export-marketing-settings }}' -eq 'true') {$True} Else {$False}) `
-                                            -$ExportOutlookSynchronizationSettings (If ('${{ inputs.export-outlook-settings }}' -eq 'true') {$True} Else {$False}) `
-                                            -$ExportRelationshipRoles (If ('${{ inputs.export-relationship-roles }}' -eq 'true') {$True} Else {$False})`
-                                            -$ExportSales (If ('${{ inputs.export-sales }}' -eq 'true') {$True} Else {$False})`
+                                            -Managed (if('${{ inputs.managed }}' -eq 'true') {$True}else{$False})  `
+                                            -$ExportAutoNumberingSettings (if('${{ inputs.export-autonumbering-settings }}' -eq 'true') {$True}else{$False}) `
+                                            -$ExportCalendarSettings (if('${{ inputs.export-calendar-settings }}' -eq 'true') {$True}else{$False})  `
+                                            -$ExportCustomizationSettings (if('${{ inputs.export-customization-settings }}' -eq 'true') {$True}else{$False}) `
+                                            -$ExportEmailTrackingSettings (if('${{ inputs.export-emailtracking-settings }}' -eq 'true') {$True}else{$False}) `
+                                            -$ExportGeneralSettings (if('${{ inputs.export-general-settings }}' -eq 'true') {$True}else{$False}) `
+                                            -$ExportIsvConfig (if('${{ inputs.export-isv-config }}' -eq 'true') {$True}else{$False}) `
+                                            -$ExportMarketingSettings (if('${{ inputs.export-marketing-settings }}' -eq 'true') {$True}else{$False}) `
+                                            -$ExportOutlookSynchronizationSettings (if('${{ inputs.export-outlook-settings }}' -eq 'true') {$True}else{$False}) `
+                                            -$ExportRelationshipRoles (if('${{ inputs.export-relationship-roles }}' -eq 'true') {$True}else{$False})`
+                                            -$ExportSales (if('${{ inputs.export-sales }}' -eq 'true') {$True}else{$False})`
                                             -$AsyncOperation ${{ inputs.asyncoperation }}
 
       shell: powershell
