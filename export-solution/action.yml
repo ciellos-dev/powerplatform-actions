@@ -104,17 +104,17 @@ runs:
                                             -ClientSecret '${{ inputs.client-secret }}' `
                                             -SolutionName '${{ inputs.solution-name }}' `
                                             -SolutionOutputFile '${{ inputs.solution-output-file }}' `
-                                            -Managed [bool]::Parse(${{ inputs.managed }}) `
-                                            -$ExportAutoNumberingSettings [bool]::Parse(${{ inputs.export-autonumbering-settings }}) `
-                                            -$ExportCalendarSettings [bool]::Parse(${{ inputs.export-calendar-settings }}) `
-                                            -$ExportCustomizationSettings [bool]::Parse(${{ inputs.export-customization-settings }}) `
-                                            -$ExportEmailTrackingSettings [bool]::Parse(${{ inputs.export-emailtracking-settings }}) `
-                                            -$ExportGeneralSettings [bool]::Parse(${{ inputs.export-general-settings }}) `
-                                            -$ExportIsvConfig [bool]::Parse(${{ inputs.export-isv-config }}) `
-                                            -$ExportMarketingSettings [bool]::Parse(${{ inputs.export-marketing-settings }}) `
-                                            -$ExportOutlookSynchronizationSettings [bool]::Parse(${{ inputs.export-outlook-settings }}) `
-                                            -$ExportRelationshipRoles [bool]::Parse(${{ inputs.export-relationship-roles }}) `
-                                            -$ExportSales [bool]::Parse(${{ inputs.export-sales }}) `
+                                            -Managed [bool]::Parse('${{ inputs.managed }}') `
+                                            -$ExportAutoNumberingSettings [bool]::Parse('${{ inputs.export-autonumbering-settings }}') `
+                                            -$ExportCalendarSettings [bool]::Parse('${{ inputs.export-calendar-settings }}') `
+                                            -$ExportCustomizationSettings [bool]::Parse('${{ inputs.export-customization-settings }}') `
+                                            -$ExportEmailTrackingSettings [bool]::Parse('${{ inputs.export-emailtracking-settings }}') `
+                                            -$ExportGeneralSettings [bool]::Parse('${{ inputs.export-general-settings }}') `
+                                            -$ExportIsvConfig [bool]::Parse('${{ inputs.export-isv-config }}') `
+                                            -$ExportMarketingSettings [bool]::Parse('${{ inputs.export-marketing-settings }}') `
+                                            -$ExportOutlookSynchronizationSettings [bool]::Parse('${{ inputs.export-outlook-settings }}') `
+                                            -$ExportRelationshipRoles [bool]::Parse('${{ inputs.export-relationship-roles }}') `
+                                            -$ExportSales [bool]::Parse('${{ inputs.export-sales }}') `
                                             -$AsyncOperation ${{ inputs.asyncoperation }}
 
       shell: powershell
