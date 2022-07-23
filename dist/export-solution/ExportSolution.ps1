@@ -2,6 +2,7 @@
 
 [CmdletBinding()]
 param(
+    [parameter (Mandatory = $true)][string]$EnvironmentUrl,
     [parameter (Mandatory = $false)][string]$Username,
     [parameter (Mandatory = $false)][string]$PasswordSecret,
     [parameter (Mandatory = $false)][string]$AppId,

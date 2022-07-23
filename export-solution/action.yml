@@ -100,6 +100,7 @@ runs:
   steps:
     - run: |
         ${{ github.action_path }}\..\dist\export-solution\ExportSolution.ps1 `
+                                            -EnvironmentUrl ${{ inputs.environment-url }} `
                                             -Username '${{ inputs.user-name }}' `
                                             -PasswordSecret '${{ inputs.password-secret }}' `
                                             -AppId '${{ inputs.app-id }}' `
