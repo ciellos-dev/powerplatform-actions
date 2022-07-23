@@ -1,0 +1,29 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+name: 'unpack-solution'
+description: 'Power Platform Unpack Solution'
+inputs:
+  solution-input-file:
+    description: ''
+    required: true
+
+  solution-target-folder:
+    description: ''
+    required: false
+
+  solution-type:
+    description: ''
+    required: false
+
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+      
+        $output = ${{ github.action_path }}\..\dist\unpack_solution\UnpackSolution.ps1 `
+                                                                      -SolutionInputFile '${{ inputs.solution-input-file }}' `
+                                                                      -SolutionTargetFolder '${{ inputs.solution-target-folder }}' `
+                                                                      -SolutionType '${{ inputs.solution-type }}'
+
+      shell: powershell

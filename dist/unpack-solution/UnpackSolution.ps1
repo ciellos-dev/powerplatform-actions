@@ -1,7 +1,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 
 [CmdletBinding()]
-param()
+param(
+        [parameter(Mandatory = $true)] $SolutionInputFile,
+        [parameter(Mandatory = $true)] $SolutionTargetFolder,
+        [parameter(Mandatory = $true)][ValidateSet("Unmanaged", "Managed", "Both")] $SolutionType
+
+)
 
 function Invoke-ExtractSolution {
     [CmdletBinding()]
@@ -29,14 +34,13 @@ function Invoke-ExtractSolution {
     end {}
 }
 
-Trace-VstsEnteringInvocation $MyInvocation
 try {
     # Load shared functions and other dependencies
-    ("..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1", "..\ps_modules\SolutionPackager.psm1") `
+    ("..\ps_modules\VstsTaskSdk", "..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1", "..\ps_modules\SolutionPackager.psm1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
 
     # Get input parameters
-    $taskJson = Join-Path -Path $PSScriptRoot "task.json"
+
     $solutionInputFile = Get-VstsInputWithDefault -Name "SolutionInputFile" -taskJsonFile $taskJson
     $solutionTargetFolder = Get-VstsInputWithDefault -Name "SolutionTargetFolder" -taskJsonFile $taskJson
     $solutionType = Get-VstsInputWithDefault -Name "SolutionType" -taskJsonFile $taskJson
@@ -58,7 +62,6 @@ try {
     Invoke-ExtractSolution -action "Extract" -zipfile $solutionInputFile -folder $solutionTargetFolder -packagetype $solutionType
 
 } finally {
-    Trace-VstsLeavingInvocation $MyInvocation
 }
 
 # SIG # Begin signature block
