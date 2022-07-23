@@ -1,0 +1,110 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+name: 'who-am-i'
+description: 'Power Platform Export Solution'
+inputs:
+  environment-url:
+    description: 'URL of Power Platform environment to connect with; e.g. "https://test-env.crm.dynamics.com"'
+    required: true
+
+  user-name:
+    description: 'Power Platform user name to authenticate with, e.g. myname@my-org.onmicrosoft.com. Setting this input makes user-name and password required; specifying alternate "app-id" credential set of inputs will result in an error.'
+    required: false
+
+  password-secret:
+    description: 'Power Platform password, required if authenticating with username. Do NOT checkin password, instead create a secret and reference it here with: see: https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets#using-encrypted-secrets-in-a-workflow'
+    required: false
+
+  app-id:
+    description: 'The application id to authenticate with. Setting this input makes app-id, tenant-id and client-secret required; specifying alternate "username" credential set of inputs will result in an error.'
+    required: false
+
+  client-secret:
+    description: 'The client secret to authenticate with. Required if authenticating with app-id.'
+    required: false
+
+  tenant-id:
+    description: 'Tenant id if using app-id & client secret to authenticate.'
+    required: false
+
+  solution-name:
+    description: 'The name of the solution to export.'
+    required: true
+
+  solution-output-file:
+    description: 'Specify the solution version number.'
+    required: true
+
+  managed:
+    description: ''
+    required: true
+
+  export-autonumbering-settings:
+    description: ''
+    required: false
+
+  export-calendar-settings:
+    description: ''
+    required: false
+
+  export-customization-settings:
+    description: ''
+    required: false
+
+  export-emailtracking-settings:
+    description: ''
+    required: false
+
+  export-general-settings:
+    description: ''
+    required: false
+
+  export-marketing-settings:
+    description: ''
+    required: false
+
+  export-isv-config:
+    description: ''
+    required: false
+
+  export-outlook-settings:
+    description: ''
+    required: false
+
+  export-relationship-roles:
+    description: ''
+    required: false
+
+  export-sales:
+    description: ''
+    required: false
+
+  asyncoperation:
+    description: ''
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        ${{ github.action_path }}\..\dist\export-solution\asyncoperation.ps1 `
+                                            -Username '${{ inputs.user-name }}' `
+                                            -PasswordSecret '${{ inputs.password-secret }}' `
+                                            -AppId '${{ inputs.app-id }}' `
+                                            -ClientSecret '${{ inputs.client-secret }}' `
+                                            -SolutionName '${{ inputs.solution-name }}' `
+                                            -SolutionOutputFile '${{ inputs.solution-output-file }}' `
+                                            -Managed ${{ inputs.managed }} `
+                                            -$ExportAutoNumberingSettings ${{ inputs.export-autonumbering-settings }} `
+                                            -$ExportCalendarSettings ${{ inputs.export-calendar-settings }} `
+                                            -$ExportCustomizationSettings ${{ inputs.export-customization-settings }} `
+                                            -$ExportEmailTrackingSettings ${{ inputs.export-emailtracking-settings }} `
+                                            -$ExportGeneralSettings ${{ inputs.export-general-settings }} `
+                                            -$ExportIsvConfig ${{ inputs.export-isv-config }} `
+                                            -$ExportMarketingSettings ${{ inputs.export-marketing-settings }} `
+                                            -$ExportOutlookSynchronizationSettings ${{ inputs.export-outlook-settings }} `
+                                            -$ExportRelationshipRoles ${{ inputs.export-relationship-roles }} `
+                                            -$ExportSales ${{ inputs.export-sales }} `
+                                            -$AsyncOperation ${{ inputs.asyncoperation }}
+
+      shell: powershell

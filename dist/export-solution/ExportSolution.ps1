@@ -1,7 +1,28 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 
 [CmdletBinding()]
-param()
+param(
+    [parameter (Mandatory = $false)][string]$Username,
+    [parameter (Mandatory = $false)][string]$PasswordSecret,
+    [parameter (Mandatory = $false)][string]$AppId,
+    [parameter (Mandatory = $false)][string]$ClientSecret,
+    [parameter (Mandatory = $true)][string]$SolutionName,
+    [parameter (Mandatory = $true)][string]$SolutionOutputFile,
+    [parameter (Mandatory = $true)][bool]$Managed,
+    [parameter (Mandatory = $false)][bool]$ExportAutoNumberingSettings = $false,
+    [parameter (Mandatory = $false)][bool]$ExportCalendarSettings = $false,
+    [parameter (Mandatory = $false)][bool]$ExportCustomizationSettings = $false,
+    [parameter (Mandatory = $false)][bool]$ExportEmailTrackingSettings = $false,
+    [parameter (Mandatory = $false)][bool]$ExportGeneralSettings = $false,
+    [parameter (Mandatory = $false)][bool]$ExportIsvConfig = $false,
+    [parameter (Mandatory = $false)][bool]$ExportMarketingSettings = $false,
+    [parameter (Mandatory = $false)][bool]$ExportOutlookSynchronizationSettings = $false,
+    [parameter (Mandatory = $false)][bool]$ExportRelationshipRoles = $false,
+    [parameter (Mandatory = $false)][bool]$ExportSales = $false,
+    [parameter (Mandatory = $true)][bool]$AsyncOperation = $true,
+    [parameter (Mandatory = $true)][Timespan]$MaxAsyncWaitTime = (New-TimeSpan -Hours 1)
+
+)
 
 function Invoke-ExportSolution {
     [CmdletBinding()]
@@ -67,49 +88,50 @@ function Invoke-ExportSolution {
     }
 }
 
-Trace-VstsEnteringInvocation $MyInvocation
 try {
     # Load shared functions and other dependencies
-    ("..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1") `
+    ("..\ps_modules\VstsTaskSdk", "..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
     $redirector = Get-BindingRedirector
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell"
 
     # Get input parameters and credentials
-    $authInfo = Get-AuthInfoFromActiveServiceConnection
+    $authInfo = '' 
 
-    $taskJson = Join-Path -Path $PSScriptRoot "task.json"
-    $solutionName = Get-VstsInputWithDefault -Name "SolutionName" -taskJsonFile $taskJson
-    $solutionOutputFile = Get-VstsInputWithDefault -Name "SolutionOutputFile" -taskJsonFile $taskJson
-    $managed = Get-VstsInputWithDefault -Name "Managed" -taskJsonFile $taskJson -AsBool
-    $exportAutoNumberingSettings = Get-VstsInputWithDefault -Name "ExportAutoNumberingSettings" -taskJsonFile $taskJson -AsBool
-    $exportCalendarSettings = Get-VstsInputWithDefault -Name "ExportCalendarSettings" -taskJsonFile $taskJson -AsBool
-    $exportCustomizationSettings = Get-VstsInputWithDefault -Name "ExportCustomizationSettings" -taskJsonFile $taskJson -AsBool
-    $exportEmailTrackingSettings = Get-VstsInputWithDefault -Name "ExportEmailTrackingSettings" -taskJsonFile $taskJson -AsBool
-    $exportGeneralSettings = Get-VstsInputWithDefault -Name "ExportGeneralSettings" -taskJsonFile $taskJson -AsBool
-    $exportIsvConfig = Get-VstsInputWithDefault -Name "ExportIsvConfig" -taskJsonFile $taskJson -AsBool
-    $exportMarketingSettings = Get-VstsInputWithDefault -Name "ExportMarketingSettings" -taskJsonFile $taskJson -AsBool
-    $exportOutlookSynchronizationSettings = Get-VstsInputWithDefault -Name "ExportOutlookSynchronizationSettings" -taskJsonFile $taskJson -AsBool
-    $exportRelationshipRoles = Get-VstsInputWithDefault -Name "ExportRelationshipRoles" -taskJsonFile $taskJson -AsBool
-    $exportSales = Get-VstsInputWithDefault -Name "ExportSales" -taskJsonFile $taskJson -AsBool
-    $asyncOperation = Get-VstsInputWithDefault -Name "AsyncOperation" -taskJsonFile $taskJson -AsBool
-    $asyncWaitTimeout = [TimeSpan]::FromMinutes((Get-VstsInputWithDefault -Name "MaxAsyncWaitTime" -taskJsonFile $taskJson -AsInt))
+    $PSCredential = New-Object System.Management.Automation.PSCredential ($Username, (ConvertTo-SecureString $PasswordSecret -AsPlainText -Force))
+    #if ($selectedAuthName -eq "PowerPlatformEnvironment") {
+    if(-not ($ClientSecret -eq "")){
+         $authInfo = @{
+            EnvironmentUrl  = $EnvironmentUrl
+            Credential      = $PSCredential
+            TenantId        = $null
+            AuthType        = 'OAuth'
+        }
+    }
+    #} elseif ($selectedAuthName -eq "PowerPlatformSPN") {
+    else{
+        $authInfo = @{
+            EnvironmentUrl  = $EnvironmentUrl
+            Credential      = $PSCredential
+            TenantId        = $TenantId
+            AuthType        = 'ClientSecret'
+        }
+    }
 
     Write-Verbose "ExportSolution from org: $($authInfo.EnvironmentUrl)..."
     Invoke-ExportSolution $authInfo `
-        -SolutionName $solutionName -SolutionOutputFile $solutionOutputFile -Managed $managed `
-        -ExportAutoNumberingSettings $exportAutoNumberingSettings -ExportCalendarSettings $exportCalendarSettings `
-        -ExportCustomizationSettings $exportCustomizationSettings -ExportEmailTrackingSettings $exportEmailTrackingSettings `
-        -ExportGeneralSettings $exportGeneralSettings -ExportIsvConfig $exportIsvConfig `
-        -ExportMarketingSettings $exportMarketingSettings -ExportOutlookSynchronizationSettings $exportOutlookSynchronizationSettings `
-        -ExportRelationshipRoles $exportRelationshipRoles -ExportSales $exportSales `
-        -AsyncOperation $asyncOperation  -MaxAsyncWaitTime $asyncWaitTimeout
+        -SolutionName $SolutionName -SolutionOutputFile $SolutionOutputFile -Managed $Managed `
+        -ExportAutoNumberingSettings $ExportAutoNumberingSettings -ExportCalendarSettings $ExportCalendarSettings `
+        -ExportCustomizationSettings $ExportCustomizationSettings -ExportEmailTrackingSettings $ExportEmailTrackingSettings `
+        -ExportGeneralSettings $ExportGeneralSettings -ExportIsvConfig $ExportIsvConfig `
+        -ExportMarketingSettings $ExportMarketingSettings -ExportOutlookSynchronizationSettings $ExportOutlookSynchronizationSettings `
+        -ExportRelationshipRoles $ExportRelationshipRoles -ExportSales $ExportSales `
+        -AsyncOperation $AsyncOperation  -MaxAsyncWaitTime $MaxAsyncWaitTime
 
 } finally {
     if ($null -ne $redirector) {
         $redirector.Dispose()
     }
-    Trace-VstsLeavingInvocation $MyInvocation
 }
 
 # SIG # Begin signature block

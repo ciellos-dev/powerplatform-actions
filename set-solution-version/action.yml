@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
-name: 'who-am-i'
-description: 'Power Platform Who Am I'
+name: 'set-solution-version'
+description: 'Power Platform Set Solution Version'
 inputs:
   environment-url:
     description: 'URL of Power Platform environment to connect with; e.g. "https://test-env.crm.dynamics.com"'
