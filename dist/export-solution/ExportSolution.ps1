@@ -125,7 +125,7 @@ try {
         -ExportGeneralSettings $ExportGeneralSettings -ExportIsvConfig $ExportIsvConfig `
         -ExportMarketingSettings $ExportMarketingSettings -ExportOutlookSynchronizationSettings $ExportOutlookSynchronizationSettings `
         -ExportRelationshipRoles $ExportRelationshipRoles -ExportSales $ExportSales `
-        -AsyncOperation $AsyncOperation  -MaxAsyncWaitTime $MaxAsyncWaitTime
+        -AsyncOperation $AsyncOperation  -MaxAsyncWaitTime (New-TimeSpan -Hours 1)
 
 } finally {
     if ($null -ne $redirector) {
