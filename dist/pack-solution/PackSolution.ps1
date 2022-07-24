@@ -1,7 +1,11 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 
 [CmdletBinding()]
-param()
+param(
+        [parameter(Mandatory = $true)] $SolutionInputFolder,
+        [parameter(Mandatory = $true)] $SolutionTargetFile,
+        [parameter(Mandatory = $true)][ValidateSet("Unmanaged", "Managed", "Both")] $SolutionType
+)
 
 function Invoke-PackSolution {
     [CmdletBinding()]
@@ -29,22 +33,15 @@ function Invoke-PackSolution {
     end {}
 }
 
-Trace-VstsEnteringInvocation $MyInvocation
 try {
     # Load shared functions and other dependencies
-    ("..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1", "..\ps_modules\SolutionPackager.psm1") `
+    ("..\ps_modules\VstsTaskSdk", "..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1", "..\ps_modules\SolutionPackager.psm1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
 
-    # Get input parameters
-    $taskJson = Join-Path -Path $PSScriptRoot "task.json"
-    $solutionSourceFolder = Get-VstsInputWithDefault -Name "SolutionSourceFolder" -taskJsonFile $taskJson
-    $solutionOutputFile = Get-VstsInputWithDefault -Name "SolutionOutputFile" -taskJsonFile $taskJson
-    $solutionType = Get-VstsInputWithDefault -Name "SolutionType" -taskJsonFile $taskJson
 
-    Invoke-PackSolution -action "Pack" -zipfile $solutionOutputFile -folder $solutionSourceFolder -packagetype $solutionType
+    Invoke-PackSolution -action "Pack" -zipfile $SolutionTargetFile -folder $SolutionInputFolder -packagetype $SolutionType
 
 } finally {
-    Trace-VstsLeavingInvocation $MyInvocation
 }
 
 # SIG # Begin signature block

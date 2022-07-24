@@ -1,0 +1,28 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+name: 'pack-solution'
+description: 'Power Platform Pack Solution'
+inputs:
+  solution-input-folder:
+    description: ''
+    required: true
+
+  solution-target-file:
+    description: ''
+    required: false
+
+  solution-type:
+    description: ''
+    required: false
+
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+      
+        $output = ${{ github.action_path }}\..\dist\pack-solution\PackSolution.ps1 -SolutionInputFolder '${{ inputs.solution-input-folder }}' `
+                                                                                        -SolutionTargetFile '${{ inputs.solution-target-file }}' `
+                                                                                        -SolutionType '${{ inputs.solution-type }}'
+
+      shell: powershell
