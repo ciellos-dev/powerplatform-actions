@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
-name: 'export-solution'
-description: 'Power Platform Export Solution'
+name: 'import-solution'
+description: 'Power Platform Import Solution'
 inputs:
   environment-url:
     description: 'URL of Power Platform environment to connect with; e.g. "https://test-env.crm.dynamics.com"'
@@ -27,65 +27,41 @@ inputs:
     description: 'Tenant id if using app-id & client secret to authenticate.'
     required: false
 
-  solution-name:
-    description: 'The name of the solution to export.'
-    required: true
-
-  solution-output-file:
+  solution-input-file:
     description: 'Specify the solution version number.'
     required: true
 
-  managed:
-    description: ''
-    required: true
-    default: 'false'
-
-  export-autonumbering-settings:
+  use-deployment-settings-file:
     description: ''
     required: false
     default: 'false'
 
-  export-calendar-settings:
+  deployment-settings-file:
     description: ''
     required: false
     default: 'false'
 
-  export-customization-settings:
+  holding-solution:
     description: ''
     required: false
     default: 'false'
 
-  export-emailtracking-settings:
+  overwrite-unmanaged-customization:
     description: ''
     required: false
     default: 'false'
 
-  export-general-settings:
+  publish-workflows:
     description: ''
     required: false
     default: 'false'
 
-  export-marketing-settings:
+  skip-product-update-dependencies:
     description: ''
     required: false
     default: 'false'
 
-  export-isv-config:
-    description: ''
-    required: false
-    default: 'false'
-
-  export-outlook-settings:
-    description: ''
-    required: false
-    default: 'false'
-
-  export-relationship-roles:
-    description: ''
-    required: false
-    default: 'false'
-
-  export-sales:
+  convert-to-managed:
     description: ''
     required: false
     default: 'false'
@@ -99,25 +75,20 @@ runs:
   using: "composite"
   steps:
     - run: |
-        ${{ github.action_path }}\..\dist\export-solution\ExportSolution.ps1 `
+        ${{ github.action_path }}\..\dist\import-solution\ImportSolution.ps1 `
                                             -EnvironmentUrl ${{ inputs.environment-url }} `
                                             -Username '${{ inputs.user-name }}' `
                                             -PasswordSecret '${{ inputs.password-secret }}' `
                                             -AppId '${{ inputs.app-id }}' `
                                             -ClientSecret '${{ inputs.client-secret }}' `
-                                            -SolutionName '${{ inputs.solution-name }}' `
-                                            -SolutionOutputFile '${{ inputs.solution-output-file }}' `
-                                            -Managed ([Boolean]::Parse('${{ inputs.managed }}')) `
-                                            -ExportAutoNumberingSettings ([Boolean]::Parse('${{ inputs.export-autonumbering-settings }}')) `
-                                            -ExportCalendarSettings ([Boolean]::Parse('${{ inputs.export-calendar-settings }}')) `
-                                            -ExportCustomizationSettings ([Boolean]::Parse('${{ inputs.export-customization-settings }}')) `
-                                            -ExportEmailTrackingSettings ([Boolean]::Parse('${{ inputs.export-emailtracking-settings }}')) `
-                                            -ExportGeneralSettings ([Boolean]::Parse('${{ inputs.export-general-settings }}')) `
-                                            -ExportIsvConfig ([Boolean]::Parse('${{ inputs.export-isv-config }}')) `
-                                            -ExportMarketingSettings ([Boolean]::Parse('${{ inputs.export-marketing-settings }}')) `
-                                            -ExportOutlookSynchronizationSettings ([Boolean]::Parse('${{ inputs.export-outlook-settings }}')) `
-                                            -ExportRelationshipRoles ([Boolean]::Parse('${{ inputs.export-relationship-roles }}')) `
-                                            -ExportSales ([Boolean]::Parse('${{ inputs.export-sales }}')) `
+                                            -SolutionInputFile '${{ inputs.solution-input-file }}' `
+                                            -UseDeploymentSettingsFile ([Boolean]::Parse('${{ inputs.use-deployment-settings-file }}')) `
+                                            -DeploymentSettingsFile '${{ inputs.deployment-settings-file }}' `
+                                            -HoldingSolution ([Boolean]::Parse('${{ inputs.holding-solution }}')) `
+                                            -OverwriteUnmanagedCustomizations ([Boolean]::Parse('${{ inputs.overwrite-unmanaged-customization }}')) `
+                                            -PublishWorkflows ([Boolean]::Parse('${{ inputs.publish-workflows }}')) `
+                                            -SkipProductUpdateDependencies ([Boolean]::Parse('${{ inputs.skip-product-update-dependencies }}')) `
+                                            -ConvertToManaged ([Boolean]::Parse('${{ inputs.convert-to-managed }}')) `
                                             -AsyncOperation ([Boolean]::Parse('${{ inputs.asyncoperation }}'))
 
       shell: powershell

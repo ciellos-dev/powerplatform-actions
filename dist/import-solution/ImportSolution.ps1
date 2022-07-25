@@ -1,7 +1,26 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 
 [CmdletBinding()]
-param()
+param(
+    [parameter (Mandatory = $true)][string]$EnvironmentUrl,
+    [parameter (Mandatory = $false)][string]$Username,
+    [parameter (Mandatory = $false)][string]$PasswordSecret,
+    [parameter (Mandatory = $false)][string]$AppId,
+    [parameter (Mandatory = $false)][string]$ClientSecret,    
+    [parameter (Mandatory = $true)][string]$SolutionInputFile,
+    [parameter (Mandatory = $false)][bool]$UseDeploymentSettingsFile,
+    [parameter (Mandatory = $false)][string]$DeploymentSettingsFile,
+    [parameter (Mandatory = $false)][bool]$HoldingSolution = $false,
+    [parameter (Mandatory = $false)][bool]$OverwriteUnmanagedCustomizations = $false,
+    [parameter (Mandatory = $false)][bool]$PublishWorkflows = $true,
+    [parameter (Mandatory = $false)][bool]$SkipProductUpdateDependencies = $false,
+    [parameter (Mandatory = $false)][bool]$AsyncOperation = $false,
+    [parameter (Mandatory = $false)][bool]$ConvertToManaged = $false
+
+
+
+
+)
 
 function Invoke-ImportSolution {
     [CmdletBinding()]
@@ -32,46 +51,48 @@ function Invoke-ImportSolution {
     }
 }
 
-Trace-VstsEnteringInvocation $MyInvocation
 try {
     # Load shared functions and other dependencies
-    ("..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1") `
+    ("..\ps_modules\VstsTaskSdk", "..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1") `
         | %{ Join-Path -Path $PSScriptRoot $_ } | Import-Module
     $redirector = Get-BindingRedirector
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell"
 
     # Get input parameters and credentials
-    $authInfo = Get-AuthInfoFromActiveServiceConnection
+    $authInfo = '' 
 
-    $taskJson = Join-Path -Path $PSScriptRoot "task.json"
-    $solutionInputFile = Get-VstsInputWithDefault -Name "SolutionInputFile" -taskJsonFile $taskJson
-
-    $deploymentSettingsFile = ""
-    $useDeploymentSettingsFile = Get-VstsInputWithDefault -Name "UseDeploymentSettingsFile" -taskJsonFile $taskJson -AsBool
-    if ($useDeploymentSettingsFile) {
-        $deploymentSettingsFile = Get-VstsInputWithDefault -Name "DeploymentSettingsFile" -taskJsonFile $taskJson
+    $PSCredential = New-Object System.Management.Automation.PSCredential ($Username, (ConvertTo-SecureString $PasswordSecret -AsPlainText -Force))
+    #if ($selectedAuthName -eq "PowerPlatformEnvironment") {
+    if(-not ($ClientSecret -eq "")){
+         $authInfo = @{
+            EnvironmentUrl  = $EnvironmentUrl
+            Credential      = $PSCredential
+            TenantId        = $null
+            AuthType        = 'OAuth'
+        }
     }
-    $holdingSolution = Get-VstsInputWithDefault -Name "HoldingSolution" -taskJsonFile $taskJson -AsBool
-    $overwriteUnmanagedCustomizations = Get-VstsInputWithDefault -Name "OverwriteUnmanagedCustomizations" -taskJsonFile $taskJson -AsBool
-    $publishWorkflows = Get-VstsInputWithDefault -Name "PublishWorkflows" -taskJsonFile $taskJson -AsBool
-    $skipProductUpdateDependencies = Get-VstsInputWithDefault -Name "SkipProductUpdateDependencies" -taskJsonFile $taskJson -AsBool
-    $asyncOperation = Get-VstsInputWithDefault -Name "AsyncOperation" -taskJsonFile $taskJson -AsBool
-    $asyncWaitTimeout = [TimeSpan]::FromMinutes((Get-VstsInputWithDefault -Name "MaxAsyncWaitTime" -taskJsonFile $taskJson -AsInt))
-    $convertToManaged = Get-VstsInputWithDefault -Name "ConvertToManaged" -taskJsonFile $taskJson -AsBool
+    #} elseif ($selectedAuthName -eq "PowerPlatformSPN") {
+    else{
+        $authInfo = @{
+            EnvironmentUrl  = $EnvironmentUrl
+            Credential      = $PSCredential
+            TenantId        = $TenantId
+            AuthType        = 'ClientSecret'
+        }
+    }
 
     Write-Verbose "ImportSolution to org: $($authInfo.EnvironmentUrl)..."
     Invoke-ImportSolution $authInfo `
-        -SolutionInputFile $solutionInputFile -DeploymentSettingsFile $deploymentSettingsFile -HoldingSolution $holdingSolution `
-        -OverwriteUnmanagedCustomizations $overwriteUnmanagedCustomizations -PublishWorkflows $publishWorkflows -SkipProductUpdateDependencies $skipProductUpdateDependencies `
-        -AsyncOperation $asyncOperation -MaxAsyncWaitTime $asyncWaitTimeout `
-        -ConvertToManaged $convertToManaged
+        -SolutionInputFile $SolutionInputFile -DeploymentSettingsFile $DeploymentSettingsFile -HoldingSolution $HoldingSolution `
+        -OverwriteUnmanagedCustomizations $OverwriteUnmanagedCustomizations -PublishWorkflows $PublishWorkflows -SkipProductUpdateDependencies $SkipProductUpdateDependencies `
+        -AsyncOperation $AsyncOperation -MaxAsyncWaitTime (New-TimeSpan -Hours 1) `
+        -ConvertToManaged $ConvertToManaged
 
 
 } finally {
     if ($null -ne $redirector) {
         $redirector.Dispose()
     }
-    Trace-VstsLeavingInvocation $MyInvocation
 }
 
 # SIG # Begin signature block
