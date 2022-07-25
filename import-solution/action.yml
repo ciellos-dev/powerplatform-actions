@@ -39,7 +39,7 @@ inputs:
   deployment-settings-file:
     description: ''
     required: false
-    default: 'false'
+    default: ''
 
   holding-solution:
     description: ''
