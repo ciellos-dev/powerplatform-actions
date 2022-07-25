@@ -28,7 +28,6 @@ function Invoke-PublishCustomizations {
     end {}
 }
 
-Trace-VstsEnteringInvocation $MyInvocation
 try {
     # Load shared functions and other dependencies
     ("..\ps_modules\SharedFunctions.psm1", "..\ps_modules\Get-ParameterValue.ps1") `
@@ -66,7 +65,6 @@ try {
     if ($null -ne $redirector) {
         $redirector.Dispose()
     }
-    Trace-VstsLeavingInvocation $MyInvocation
 }
 
 # SIG # Begin signature block
