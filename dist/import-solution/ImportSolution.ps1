@@ -16,10 +16,6 @@ param(
     [parameter (Mandatory = $false)][bool]$SkipProductUpdateDependencies = $false,
     [parameter (Mandatory = $false)][bool]$AsyncOperation = $false,
     [parameter (Mandatory = $false)][bool]$ConvertToManaged = $false
-
-
-
-
 )
 
 function Invoke-ImportSolution {

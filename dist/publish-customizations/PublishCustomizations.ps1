@@ -1,7 +1,13 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 
 [CmdletBinding()]
-param()
+param(    
+    [parameter (Mandatory = $true)][string]$EnvironmentUrl,
+    [parameter (Mandatory = $false)][string]$Username,
+    [parameter (Mandatory = $false)][string]$PasswordSecret,
+    [parameter (Mandatory = $false)][string]$AppId,
+    [parameter (Mandatory = $false)][string]$ClientSecret
+)
 
 function Invoke-PublishCustomizations {
     [CmdletBinding()]
@@ -31,7 +37,28 @@ try {
     Import-PowerPlatformToolsPowerShellModule -ModuleName "Microsoft.Xrm.WebApi.PowerShell"
 
     # Get input parameters and credentials
-    $authInfo = Get-AuthInfoFromActiveServiceConnection
+    # Get input parameters and credentials
+    $authInfo = '' 
+
+    $PSCredential = New-Object System.Management.Automation.PSCredential ($Username, (ConvertTo-SecureString $PasswordSecret -AsPlainText -Force))
+    #if ($selectedAuthName -eq "PowerPlatformEnvironment") {
+    if(-not ($ClientSecret -eq "")){
+         $authInfo = @{
+            EnvironmentUrl  = $EnvironmentUrl
+            Credential      = $PSCredential
+            TenantId        = $null
+            AuthType        = 'OAuth'
+        }
+    }
+    #} elseif ($selectedAuthName -eq "PowerPlatformSPN") {
+    else{
+        $authInfo = @{
+            EnvironmentUrl  = $EnvironmentUrl
+            Credential      = $PSCredential
+            TenantId        = $TenantId
+            AuthType        = 'ClientSecret'
+        }
+    }
 
     Invoke-PublishCustomizations $authInfo
 
